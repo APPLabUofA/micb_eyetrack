@@ -10,24 +10,31 @@
 %
 % ==== TRIGGERS ====
 %
-% Break: 50
-% Probe: 40
+% Break: 90
 % 
-% -- Targets Present --
-% Trial start (fixation): lag (1,2,3,4)
-% Entrainers: 61-68
-% Target: 20+lag (21,22,23,24)
-% Mask: 90+lag (91,92,93,94)
-% Response screen: 40+lag (41,42,43,44)  
-% Response: 80+lag (81,82,83,84)
+% -- Turn Trials --
+% Trial start (fixation): soas+10 (3,5,7,9,10,11,13,15,17)
+% Stimulus change: 
+%   Movement & Gabor: soas+21 (14,16,18,20,21,22,24,26,28)
+%   Movement:         soas+30 (23,25,27,29,30,31,33,35,37)
+%   Gabor:            soas+41 (34,36,38,40,41,42,44,46,48)
+% Response screen: soas+50 (43,45,47,49,50,51,53,55,57)  
+% Response:
+%   Correct: soas+61 (54,56,58,60,61,62,64,66,68)
+%   Incorrect: soas+70 (63,65,67,69,70,71,73,75,77)
+%   Timed out: soas+81 (74,76,78,80,81,82,84,86,88)
 %
-% -- Targets Not Present --
-% Trial start (fixation): 10+lag (11,12,13,14)
-% Entrainers: 61-68
-% Target: 30+lag (31,32,33,34)
-% Mask: 95+lag (96,97,98,99)
-% Response screen: 50+lag (51,52,53,54)%
-% Response: 70+lag (71,72,73,74)
+% -- Straight Trials --
+% Trial start (fixation): soas+110 (103,105,107,109,110,111,113,115,117)
+% Stimulus change: 
+%   Movement & Gabor: soas+121 (114,116,118,120,121,122,124,126,128)
+%   Movement:         soas+130 (123,125,127,129,130,131,133,135,137)
+%   Gabor:            soas+141 (134,136,138,140,141,142,144,146,148)
+% Response screen: soas+150 (143,145,147,149,150,151,153,155,157)  
+% Response:
+%   Correct: soas+161 (154,156,158,160,161,162,164,166,168)
+%   Incorrect: soas+170 (163,165,167,169,170,171,173,175,177)
+%   Timed out: soas+181 (174,176,178,180,181,182,184,186,188)
 % 
 % /////////////////////////////////////////////////////////////////////////
 
@@ -200,13 +207,23 @@ for k = -(practiceTrials+1):length(trialList)
         target = practiceList(-k,1);
         angle = practiceList(-k,2);
         trialNum = 'Practice';
-        trig = 0; %not recording practice trials
+        %trial type trigger
+        if angle ~= 0 %turn
+            trig = 10 + this_soa; %(3,5,7,9,10,11,13,15,17)
+        elseif angle == 0 %straight
+            trig = 110 + this_soa; %(103,105,107,109,110,111,113,115,117)
+        end
     elseif k == 0
         direction = practiceList(practiceTrials,3);
         target = practiceList(practiceTrials,1);
         angle = practiceList(practiceTrials,2);
         trialNum = 'Practice';
-        trig = 0; %not recording practice trials
+        %trial type trigger
+        if angle ~= 0 %turn
+            trig = 10 + this_soa; %(3,5,7,9,10,11,13,15,17)
+        elseif angle == 0 %straight
+            trig = 110 + this_soa; %(103,105,107,109,110,111,113,115,117)
+        end
     else
         direction = trialList(k,3);
         target = trialList(k,1);
@@ -214,9 +231,9 @@ for k = -(practiceTrials+1):length(trialList)
         trialNum = num2str(k);
         %trial type trigger
         if angle ~= 0 %turn
-            trig = 10 + this_soa;
+            trig = 10 + this_soa; %(3,5,7,9,10,11,13,15,17)
         elseif angle == 0 %straight
-            trig = 30 + this_soa;
+            trig = 110 + this_soa; %(103,105,107,109,110,111,113,115,117)
         end
     end
 
@@ -294,8 +311,35 @@ for k = -(practiceTrials+1):length(trialList)
             rotation(target) = rotation(target) + rotationSize;
         end
 
-        MoveStim()
-        DrawStim(0) %don't want triggers every movement
+        % Make triggers specific to the movement events
+        if (motion_howfar < 1 & ~motionOver) && (gabor_howfar < gabor_changePoint & ~gaborOver)
+            MoveStim()
+            if angle ~= 0 %turn
+                DrawStim((21 + this_soa))  %(14,16,18,20,21,22,24,26,28)
+            elseif angle == 0 %straight
+                DrawStim((121 + this_soa)) %(114,116,118,120,121,122,124,126,128)
+            end
+        elseif motion_howfar < 1 & ~motionOver
+            MoveStim()
+            if angle ~= 0 %turn
+                DrawStim((30 + this_soa))  %(23,25,27,29,30,31,33,35,37)
+            elseif angle == 0 %straight
+                DrawStim((130 + this_soa)) %(123,125,127,129,130,131,133,135,137)
+            end
+        elseif gabor_howfar < gabor_changePoint & ~gaborOver
+            MoveStim()
+            if angle ~= 0 %turn
+                DrawStim((41 + this_soa))  %(34,36,38,40,41,42,44,46,48)
+            elseif angle == 0 %straight
+                DrawStim((141 + this_soa)) %(134,136,138,140,141,142,144,146,148)
+            end 
+        else
+            MoveStim()
+            DrawStim(0) %don't want triggers every movement
+        end
+        
+%         MoveStim()
+%         DrawStim(0) %don't want triggers every movement
     end
 
 
@@ -317,7 +361,11 @@ for k = -(practiceTrials+1):length(trialList)
     DrawFormattedText(w,'Click the patch that rotated:','center',yc-r-g);
     Screen('DrawTextures',w,gaborPatch,[],centeredRects,rotation);
     Screen('FillOval',w,fixationColor,[xc-fixationSize yc-fixationSize xc+fixationSize yc+fixationSize]);
-    Screen('FillRect',w,Vpixx2Vamp((trig+40)),trigger_size);
+    if angle ~= 0 %turn
+        Screen('FillRect',w,Vpixx2Vamp((50 + this_soa)),trigger_size); %(43,45,47,49,50,51,53,55,57)
+    elseif angle == 0 %straight
+        Screen('FillRect',w,Vpixx2Vamp((150 + this_soa)),trigger_size); %(143,145,147,149,150,151,153,155,157)
+    end     
     Screen('Flip',w);
     
     accuracy = 2;
@@ -338,11 +386,14 @@ for k = -(practiceTrials+1):length(trialList)
   
     if clicked==1&&x>=correctRect(1)&&x<=correctRect(3)&&y>=correctRect(2)&&y<=correctRect(4)
         accuracy = 1;
-        RT = GetSecs-startTime;
         Screen('FillRect',w,bgcolor,rect);
         DrawFormattedText(w,'Correct!','center','center');
         RT = GetSecs-startTime;
-        Screen('FillRect',w,Vpixx2Vamp((trig+31)),trigger_size);
+        if angle ~= 0 %turn
+            Screen('FillRect',w,Vpixx2Vamp((61 + this_soa)),trigger_size); %(54,56,58,60,61,62,64,66,68)
+        elseif angle == 0 %straight
+            Screen('FillRect',w,Vpixx2Vamp((161 + this_soa)),trigger_size); %(154,156,158,160,161,162,164,166,168)
+        end     
         Screen('Flip',w);
     elseif clicked==1
         for i = 1:length(incorrectRect)
@@ -352,7 +403,11 @@ for k = -(practiceTrials+1):length(trialList)
                 Screen('FillRect',w,bgcolor,rect);
                 DrawFormattedText(w,'Incorrect patch','center','center');
                 RT = GetSecs-startTime;
-                Screen('FillRect',w,Vpixx2Vamp((trig+32)),trigger_size);
+                if angle ~= 0 %turn
+                    Screen('FillRect',w,Vpixx2Vamp((70 + this_soa)),trigger_size); %(63,65,67,69,70,71,73,75,77)
+                elseif angle == 0 %straight
+                    Screen('FillRect',w,Vpixx2Vamp((170 + this_soa)),trigger_size); %(163,165,167,169,170,171,173,175,177)
+                end
                 Screen('Flip',w);
                 break
             end
@@ -363,13 +418,21 @@ for k = -(practiceTrials+1):length(trialList)
             Screen('FillRect',w,bgcolor,rect);
             DrawFormattedText(w,'Incorrect patch','center','center'); %%%Please Click on a Gabor
             RT = GetSecs-startTime;
-            Screen('FillRect',w,Vpixx2Vamp((trig+32)),trigger_size);
+            if angle ~= 0 %turn
+                Screen('FillRect',w,Vpixx2Vamp((70 + this_soa)),trigger_size); %(63,65,67,69,70,71,73,75,77)
+            elseif angle == 0 %straight
+                Screen('FillRect',w,Vpixx2Vamp((170 + this_soa)),trigger_size); %(163,165,167,169,170,171,173,175,177)
+            end
             Screen('Flip',w);
         end
     elseif clicked == 0
         Screen('FillRect',w,bgcolor,rect);
         DrawFormattedText(w,'Please respond more quickly','center','center');
-        Screen('FillRect',w,Vpixx2Vamp((trig+33)),trigger_size);
+        if angle ~= 0 %turn
+            Screen('FillRect',w,Vpixx2Vamp((81 + this_soa)),trigger_size); %(74,76,78,80,81,82,84,86,88)
+        elseif angle == 0 %straight
+            Screen('FillRect',w,Vpixx2Vamp((181 + this_soa)),trigger_size); %(174,176,178,180,181,182,184,186,188)
+        end
         Screen('Flip',w);
         accuracy = 2;
         RT = timeLimit;
@@ -415,7 +478,7 @@ for k = -(practiceTrials+1):length(trialList)
     if k>0 && k~=totalTrials && mod(k,breakEvery)==0 %whenever k trials is divisible w/out remainder by breakEvery
         Screen('FillRect',w,bgcolor);
         DrawFormattedText(w,'Feel free to take a break at this time\n\nWhen you are ready, click the mouse to continue.','center','center',[]);
-        Screen('FillRect',w,Vpixx2Vamp(80),trigger_size);
+        Screen('FillRect',w,Vpixx2Vamp(90),trigger_size);
         Screen('Flip',w)
         GetClicks(w);
         WaitSecs(1.25);

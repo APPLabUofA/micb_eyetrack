@@ -317,7 +317,7 @@ for k = -(practiceTrials+1):length(trialList)
     DrawFormattedText(w,'Click the patch that rotated:','center',yc-r-g);
     Screen('DrawTextures',w,gaborPatch,[],centeredRects,rotation);
     Screen('FillOval',w,fixationColor,[xc-fixationSize yc-fixationSize xc+fixationSize yc+fixationSize]);
-    Screen('FillRect',w,Vpixx2Vamp((trig+20)),trigger_size);
+    Screen('FillRect',w,Vpixx2Vamp((trig+30)),trigger_size);
     Screen('Flip',w);
     
     accuracy = 2;

@@ -10,6 +10,7 @@
 %
 % ==== TRIGGERS ====
 %
+% Start eye tracker: 99
 % Break: 90
 % 
 % -- Turn Trials --
@@ -175,7 +176,7 @@ Screen('TextSize',w,textsize);
 KbWait;
 
 Screen('FillRect',w,bgcolor);
-Screen('FillRect',w,Vpixx2Vamp(0),trigger_size);
+Screen('FillRect',w,Vpixx2Vamp(99),trigger_size);
 Screen('Flip',w)
 system('C:\Users\user\Downloads\CoreSDK\CoreSDK\samples\Streams\Interaction_Streams_101\bin\Debug\Interaction_Streams_101.exe &');
 

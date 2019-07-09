@@ -10,8 +10,9 @@
 %
 % ==== TRIGGERS ====
 %
-% Start eye tracker: 99
-% Break: 90
+% Start eye tracker: 90
+% End eye tracker: 99
+% Break: 2
 % 
 % -- Turn Trials --
 % Trial start (fixation): soas+10 (3,5,7,9,10,11,13,15,17)
@@ -88,7 +89,7 @@ rotationSize = 30;
 
 % trial parameters
 practiceTrials = 30;
-breakEvery = 48; %so equal # trials per block (5 blocks at reps = 5)
+breakEvery = 48; %so equal # trials per block (5 blocks at reps = 5 & 6 blocks at reps = 6)
 timeLimit = 5;
 feedbackPause = .5;
 
@@ -105,7 +106,7 @@ gaborPatch = Screen('MakeTexture',w,gaborMatrix);
 
 % /////////////////////////////////////////////////////////////////////////
 %% Counterbalancing
-reps = 5; % Number of reps per angle condition per direction
+reps = 6; % Number of reps per angle condition per direction
 % reps = 4; % Number of reps per angle condition per direction
 trialList = [repmat(1:numberOfGabors,1,3*reps);...  %list of which target
     zeros(1,numberOfGabors*reps) ...  %list of which angle (%270 left, 90 Right, 0 straight)
@@ -176,7 +177,7 @@ Screen('TextSize',w,textsize);
 KbWait;
 
 Screen('FillRect',w,bgcolor);
-Screen('FillRect',w,Vpixx2Vamp(99),trigger_size);
+Screen('FillRect',w,Vpixx2Vamp(90),trigger_size);
 Screen('Flip',w)
 system('C:\Users\user\Downloads\CoreSDK\CoreSDK\samples\Streams\Interaction_Streams_101\bin\Debug\Interaction_Streams_101.exe &');
 
@@ -479,7 +480,7 @@ for k = -(practiceTrials+1):length(trialList)
     if k>0 && k~=totalTrials && mod(k,breakEvery)==0 %whenever k trials is divisible w/out remainder by breakEvery
         Screen('FillRect',w,bgcolor);
         DrawFormattedText(w,'Feel free to take a break at this time\n\nWhen you are ready, click the mouse to continue.','center','center',[]);
-        Screen('FillRect',w,Vpixx2Vamp(90),trigger_size);
+        Screen('FillRect',w,Vpixx2Vamp(2),trigger_size);
         Screen('Flip',w)
         GetClicks(w);
         WaitSecs(1.25);
@@ -496,7 +497,7 @@ end
 
 Screen('FillRect',w,bgcolor);
 DrawFormattedText(w,'You are done!!\n\nPress any Key and then call the experimenter.','center','center',[]);
-Screen('FillRect',w,Vpixx2Vamp(0),trigger_size);
+Screen('FillRect',w,Vpixx2Vamp(99),trigger_size);
 Screen('Flip',w)
 KbWait;
  

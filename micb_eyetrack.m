@@ -175,7 +175,7 @@ qq = 1; %for recording timing of events in matlab
 % /////////////////////////////////////////////////////////////////////////
 %% Instructions for experimenter
 Screen('FillRect',w,bgcolor);
-DrawFormattedText(w,'Calibrated? Start EEG Recording and Press any key','center','center',[]);
+DrawFormattedText(w,'Calibrated? Start EEG Recording and Press the SPACE BAR','center','center',[]);
 Screen('FillRect',w,Vpixx2Vamp(0),trigger_size);
 Screen('Flip',w)
 

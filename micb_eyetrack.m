@@ -44,6 +44,7 @@
 
 clear all
 Screen('Preference', 'SkipSyncTests', 1)
+Priority(2);
 clc;
 seed = ceil(sum(clock)*1000);
 % rand('twister',seed);
@@ -70,6 +71,10 @@ yBorder = round(rect(4)./6);
 textSize = round(rect(4)*.02);
 Screen('TextSize',w,textSize);
 directionNames = {'Right' 'Left'};
+
+% Get presentation timing information
+refresh = Screen('GetFlipInterval',w); % Get flip refresh rate
+slack = refresh/2; % Divide by 2 to get slack
 
 % fixation parameters
 fixationPause = .5;
@@ -164,6 +169,8 @@ outp(address_eeg,0);  %set pins to zero
 %% ----Trigger Stimulus
 trigger_size = [0 0 1 1];
 
+qq = 1; %for recording timing of events in matlab
+
 % /////////////////////////////////////////////////////////////////////////
 % /////////////////////////////////////////////////////////////////////////
 %% Instructions for experimenter
@@ -176,8 +183,9 @@ KbWait;
 
 Screen('FillRect',w,bgcolor);
 Screen('FillRect',w,Vpixx2Vamp(90),trigger_size);
-Screen('Flip',w)
+eyetrack_on = Screen('Flip',w);
 system('C:\Users\user\Downloads\CoreSDK\CoreSDK\samples\Streams\Interaction_Streams_101\bin\Debug\Interaction_Streams_101.exe &');
+eyetrack_on2 = GetSecs;
 
 WaitSecs(2);
 
@@ -279,6 +287,11 @@ for k = -(practiceTrials+1):length(trialList)
     movementIncrement = repmat([movementSpeed 0 movementSpeed 0],numberOfGabors,1)';
     
     DrawStim(trig,trigger_size) % draw stimulus screen
+    % --track timing of events in matlab--
+    eventtrack(qq,1) = trig;
+    eventtrack(qq,2) = GetSecs();
+    qq = qq + 1;
+    % ------------------------------------
     WaitSecs(fixationPause); 
 
     while ~trialOver
@@ -316,22 +329,52 @@ for k = -(practiceTrials+1):length(trialList)
             MoveStim()
             if angle ~= 0 %turn
                 DrawStim((21 + this_soa),trigger_size)  %(14,16,18,20,21,22,24,26,28)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (21 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
             elseif angle == 0 %straight
                 DrawStim((121 + this_soa),trigger_size) %(114,116,118,120,121,122,124,126,128)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (121 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
             end
         elseif motion_howfar < 1 & ~motionOver
             MoveStim()
             if angle ~= 0 %turn
                 DrawStim((30 + this_soa),trigger_size)  %(23,25,27,29,30,31,33,35,37)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (30 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
             elseif angle == 0 %straight
                 DrawStim((130 + this_soa),trigger_size) %(123,125,127,129,130,131,133,135,137)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (130 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
             end
         elseif gabor_howfar < gabor_changePoint & ~gaborOver
             MoveStim()
             if angle ~= 0 %turn
                 DrawStim((41 + this_soa),trigger_size)  %(34,36,38,40,41,42,44,46,48)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (41 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
             elseif angle == 0 %straight
                 DrawStim((141 + this_soa),trigger_size) %(134,136,138,140,141,142,144,146,148)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (141 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
             end 
         else
             MoveStim()
@@ -363,10 +406,22 @@ for k = -(practiceTrials+1):length(trialList)
     Screen('FillOval',w,fixationColor,[xc-fixationSize yc-fixationSize xc+fixationSize yc+fixationSize]);
     if angle ~= 0 %turn
         Screen('FillRect',w,Vpixx2Vamp((50 + this_soa)),trigger_size); %(43,45,47,49,50,51,53,55,57)
+        Screen('Flip',w);
+        % --track timing of events in matlab--
+        eventtrack(qq,1) = (50 + this_soa);
+        eventtrack(qq,2) = GetSecs();
+        qq = qq + 1;
+        % ------------------------------------
     elseif angle == 0 %straight
         Screen('FillRect',w,Vpixx2Vamp((150 + this_soa)),trigger_size); %(143,145,147,149,150,151,153,155,157)
+        Screen('Flip',w);
+        % --track timing of events in matlab--
+        eventtrack(qq,1) = (150 + this_soa);
+        eventtrack(qq,2) = GetSecs();
+        qq = qq + 1;
+        % ------------------------------------
     end     
-    Screen('Flip',w);
+%     Screen('Flip',w);
     
     accuracy = 2;
     startTime = GetSecs;
@@ -391,10 +446,22 @@ for k = -(practiceTrials+1):length(trialList)
         RT = GetSecs-startTime;
         if angle ~= 0 %turn
             Screen('FillRect',w,Vpixx2Vamp((61 + this_soa)),trigger_size); %(54,56,58,60,61,62,64,66,68)
+            Screen('Flip',w);
+            % --track timing of events in matlab--
+            eventtrack(qq,1) = (61 + this_soa);
+            eventtrack(qq,2) = GetSecs();
+            qq = qq + 1;
+            % ------------------------------------
         elseif angle == 0 %straight
             Screen('FillRect',w,Vpixx2Vamp((161 + this_soa)),trigger_size); %(154,156,158,160,161,162,164,166,168)
+            Screen('Flip',w);
+            % --track timing of events in matlab--
+            eventtrack(qq,1) = (161 + this_soa);
+            eventtrack(qq,2) = GetSecs();
+            qq = qq + 1;
+            % ------------------------------------
         end     
-        Screen('Flip',w);
+%         Screen('Flip',w);
     elseif clicked==1
         for i = 1:length(incorrectRect)
             if x>=incorrectRect(1,i)&&x<=incorrectRect(3,i)&&y>=incorrectRect(2,i)&&y<=incorrectRect(4,i)%%%                
@@ -405,10 +472,22 @@ for k = -(practiceTrials+1):length(trialList)
                 RT = GetSecs-startTime;
                 if angle ~= 0 %turn
                     Screen('FillRect',w,Vpixx2Vamp((70 + this_soa)),trigger_size); %(63,65,67,69,70,71,73,75,77)
+                    Screen('Flip',w);
+                    % --track timing of events in matlab--
+                    eventtrack(qq,1) = (70 + this_soa);
+                    eventtrack(qq,2) = GetSecs();
+                    qq = qq + 1;
+                    % ------------------------------------
                 elseif angle == 0 %straight
                     Screen('FillRect',w,Vpixx2Vamp((170 + this_soa)),trigger_size); %(163,165,167,169,170,171,173,175,177)
+                    Screen('Flip',w);
+                    % --track timing of events in matlab--
+                    eventtrack(qq,1) = (170 + this_soa);
+                    eventtrack(qq,2) = GetSecs();
+                    qq = qq + 1;
+                    % ------------------------------------
                 end
-                Screen('Flip',w);
+%                 Screen('Flip',w);
                 break
             end
         end
@@ -420,20 +499,44 @@ for k = -(practiceTrials+1):length(trialList)
             RT = GetSecs-startTime;
             if angle ~= 0 %turn
                 Screen('FillRect',w,Vpixx2Vamp((70 + this_soa)),trigger_size); %(63,65,67,69,70,71,73,75,77)
+                Screen('Flip',w);
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (70 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
             elseif angle == 0 %straight
                 Screen('FillRect',w,Vpixx2Vamp((170 + this_soa)),trigger_size); %(163,165,167,169,170,171,173,175,177)
+                Screen('Flip',w);
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (170 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
             end
-            Screen('Flip',w);
+%             Screen('Flip',w);
         end
     elseif clicked == 0
         Screen('FillRect',w,bgcolor,rect);
         DrawFormattedText(w,'Please respond more quickly','center','center');
         if angle ~= 0 %turn
             Screen('FillRect',w,Vpixx2Vamp((81 + this_soa)),trigger_size); %(74,76,78,80,81,82,84,86,88)
+            Screen('Flip',w);
+            % --track timing of events in matlab--
+            eventtrack(qq,1) = (81 + this_soa);
+            eventtrack(qq,2) = GetSecs();
+            qq = qq + 1;
+            % ------------------------------------
         elseif angle == 0 %straight
             Screen('FillRect',w,Vpixx2Vamp((181 + this_soa)),trigger_size); %(174,176,178,180,181,182,184,186,188)
+            Screen('Flip',w);
+            % --track timing of events in matlab--
+            eventtrack(qq,1) = (181 + this_soa);
+            eventtrack(qq,2) = GetSecs();
+            qq = qq + 1;
+            % ------------------------------------
         end
-        Screen('Flip',w);
+%         Screen('Flip',w);
         accuracy = 2;
         RT = timeLimit;
     end
@@ -480,6 +583,11 @@ for k = -(practiceTrials+1):length(trialList)
         DrawFormattedText(w,'Feel free to take a break at this time\n\nWhen you are ready, click the mouse to continue.','center','center',[]);
         Screen('FillRect',w,Vpixx2Vamp(2),trigger_size);
         Screen('Flip',w)
+        % --track timing of events in matlab--
+        eventtrack(qq,1) = 2;
+        eventtrack(qq,2) = GetSecs();
+        qq = qq + 1;
+        % ------------------------------------
         GetClicks(w);
         WaitSecs(1.25);
     end
@@ -496,9 +604,10 @@ end
 Screen('FillRect',w,bgcolor);
 DrawFormattedText(w,'You are done!!\n\nPress any Key and then call the experimenter.','center','center',[]);
 Screen('FillRect',w,Vpixx2Vamp(99),trigger_size);
-Screen('Flip',w)
+eyetrack_end = Screen('Flip',w);
 KbWait;
- 
+eyetrack_end2 = GetSecs; 
+
 
 fclose('all');
 Screen('CloseAll');

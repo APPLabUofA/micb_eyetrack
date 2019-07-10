@@ -93,8 +93,7 @@ movementSpeed = 3;
 rotationSize = 30;
 
 % trial parameters
-% practiceTrials = 30;
-practiceTrials = 5;
+practiceTrials = 30;
 breakEvery = 48; %so equal # trials per block (5 blocks at reps = 5 & 6 blocks at reps = 6)
 timeLimit = 5;
 feedbackPause = .5;
@@ -112,7 +111,7 @@ gaborPatch = Screen('MakeTexture',w,gaborMatrix);
 
 % /////////////////////////////////////////////////////////////////////////
 %% Counterbalancing
-reps = 1; % Number of reps per angle condition per direction
+reps = 6; % Number of reps per angle condition per direction
 % reps = 4; % Number of reps per angle condition per direction
 trialList = [repmat(1:numberOfGabors,1,3*reps);...  %list of which target
     zeros(1,numberOfGabors*reps) ...  %list of which angle (%270 left, 90 Right, 0 straight)

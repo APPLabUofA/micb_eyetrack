@@ -93,7 +93,8 @@ movementSpeed = 3;
 rotationSize = 30;
 
 % trial parameters
-practiceTrials = 30;
+% practiceTrials = 30;
+practiceTrials = 5;
 breakEvery = 48; %so equal # trials per block (5 blocks at reps = 5 & 6 blocks at reps = 6)
 timeLimit = 5;
 feedbackPause = .5;
@@ -111,7 +112,7 @@ gaborPatch = Screen('MakeTexture',w,gaborMatrix);
 
 % /////////////////////////////////////////////////////////////////////////
 %% Counterbalancing
-reps = 6; % Number of reps per angle condition per direction
+reps = 1; % Number of reps per angle condition per direction
 % reps = 4; % Number of reps per angle condition per direction
 trialList = [repmat(1:numberOfGabors,1,3*reps);...  %list of which target
     zeros(1,numberOfGabors*reps) ...  %list of which angle (%270 left, 90 Right, 0 straight)
@@ -184,7 +185,8 @@ KbWait;
 Screen('FillRect',w,bgcolor);
 Screen('FillRect',w,Vpixx2Vamp(90),trigger_size);
 eyetrack_on = Screen('Flip',w);
-system('C:\Users\user\Downloads\CoreSDK\CoreSDK\samples\Streams\Interaction_Streams_101\bin\Debug\Interaction_Streams_101.exe &');
+% system('C:\Users\user\Downloads\CoreSDK\CoreSDK\samples\Streams\Interaction_Streams_101\bin\Debug\Interaction_Streams_101.exe &');
+system('M:\Experiments\micb_eyetrack\CoreSDK\CoreSDK\samples\Streams\Interaction_Streams_101\bin\Debug\Interaction_Streams_101.exe &');
 eyetrack_on2 = GetSecs;
 
 WaitSecs(2);
@@ -611,6 +613,8 @@ eyetrack_end2 = GetSecs;
 
 fclose('all');
 Screen('CloseAll');
+ShowCursor;
+sca;
 
 %clearing unneeded variables from workspace before saving
 clear i accuracy RT x y timesUp clicked angle this_soa gabor_press

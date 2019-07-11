@@ -93,13 +93,14 @@ movementSpeed = 3;
 rotationSize = 30;
 
 % trial parameters
-practiceTrials = 30;
+practiceTrials = 20; %was 30
 breakEvery = 48; %so equal # trials per block (5 blocks at reps = 5 & 6 blocks at reps = 6)
 timeLimit = 5;
 feedbackPause = .5;
 
 %pick soas
-soas = sort([-7:2:7,0]); 
+% soas = sort([-7:2:7,0]); %for different SOAs
+soas = 0; %for gabor rotation happening only when their is a change in direction
 nsoas = length(soas);
 
 % /////////////////////////////////////////////////////////////////////////

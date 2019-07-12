@@ -199,7 +199,12 @@ Screen('FillRect',w,bgcolor);
 DrawFormattedText(w,'In the following task, you will follow, with your eyes, an array of striped patches moving across the screen.\n\nOn EVERY TRIAL, one of the patches will rotate slightly while moving with its neighbors. When prompted, you will have to click on the patch that rotated.\n\nWe are testing what conditions make that rotation harder or easier to see, so do not be surprised if you did not see any rotation. Just do your best and take a guess if you are unsure.\n\nThe task is easiest if you follow the dot that appears at the middle of the array, so follow that with your eyes on each trial.\n\n\nLet the experimenter know if you have any questions.\n\nClick the mouse to start the practice trials.','center','center',[]);
 Screen('FillRect',w,Vpixx2Vamp(0),trigger_size);
 Screen('Flip',w)
-GetClicks(w);
+GetClicks(w); 
+Screen('FillRect',w,bgcolor); %2nd one for returning task to full screen
+DrawFormattedText(w,'In the following task, you will follow, with your eyes, an array of striped patches moving across the screen.\n\nOn EVERY TRIAL, one of the patches will rotate slightly while moving with its neighbors. When prompted, you will have to click on the patch that rotated.\n\nWe are testing what conditions make that rotation harder or easier to see, so do not be surprised if you did not see any rotation. Just do your best and take a guess if you are unsure.\n\nThe task is easiest if you follow the dot that appears at the middle of the array, so follow that with your eyes on each trial.\n\n\nLet the experimenter know if you have any questions.\n\nClick the mouse to start the practice trials.','center','center',[]);
+Screen('FillRect',w,Vpixx2Vamp(0),trigger_size);
+Screen('Flip',w)
+GetClicks(w); 
 WaitSecs(1.25);
 
 % /////////////////////////////////////////////////////////////////////////
@@ -638,16 +643,16 @@ end
 save(Filename)
 % /////////////////////////////////////////////////////////////////////////
 %% Plot results
-figure; 
-plot(soas,turn_out,'r',soas,control_out,'b'); 
-legend({'Flexion','Control'});
-xlim([min(soas) max(soas)]); xticks(min(soas):1:max(soas))
-xlabel('Gabor Change First < ------ SOA (frames) ------ > Gabor Change After')
-ylabel('Detection Proportion')
-ylim([.01 1.05])
-
-% Save figure
-savefig([Info.number '--' Info.date '_plot'])
+% figure; 
+% plot(soas,turn_out,'r',soas,control_out,'b'); 
+% legend({'Flexion','Control'});
+% xlim([min(soas) max(soas)]); xticks(min(soas):1:max(soas))
+% xlabel('Gabor Change First < ------ SOA (frames) ------ > Gabor Change After')
+% ylabel('Detection Proportion')
+% ylim([.01 1.05])
+% 
+% % Save figure
+% savefig([Info.number '--' Info.date '_plot'])
 
 % /////////////////////////////////////////////////////////////////////////
 

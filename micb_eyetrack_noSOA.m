@@ -385,7 +385,20 @@ for k = -(practiceTrials+1):length(trialList)
             end 
         else
             MoveStim()
-            DrawStim(0,trigger_size) %don't want triggers every movement
+            if angle ~= 0 %turn
+                DrawStim((21 + this_soa),trigger_size)  %(14,16,18,20,21,22,24,26,28)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (21 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+            elseif angle == 0 %straight
+                DrawStim((121 + this_soa),trigger_size) %(114,116,118,120,121,122,124,126,128)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (121 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+            end
+%             DrawStim((41 + this_soa),trigger_size) %don't want triggers every movement
         end
         
 %         MoveStim()

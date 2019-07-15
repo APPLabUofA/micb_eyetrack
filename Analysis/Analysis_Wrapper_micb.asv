@@ -58,7 +58,7 @@ exp.setname = {'byFix_v1'}; % name each epoched set
 %       vs targets) within the same experimental condition.
 
 % List of participants' ids
-exp.participants = {'001','002','003','004'};
+exp.participants = {'001','002'};
 
 %% Blink Correction
 % the Blink Correction wants dissimilar events (different erps) seperated by 
@@ -152,8 +152,9 @@ exp.tfelecs = [];
 exp.singletrials = 'on';
 %Saving the single trial data is memory intensive. Just use the electrodes
 % you need. 
-exp.singletrialselecs = [2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18];
-exp.singtrlelec_name = {'Oz';'Pz';'Cz';'FCz';'Fz';'O1';'O2';'P3';'P4';'P7';'P8';'CP1';'CP2';'C5';'C6';'F3';'F4'};
+exp.singletrialselecs = [2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32];
+exp.singtrlelec_name = {'Oz';'Pz';'Cz';'FCz';'Fz';'O1';'O2';'PO3';'PO4';'P7';'P8';'P5';'P6';'P3';'P4';'CP5';...
+    'CP6';'CP1';'CP2';'C3';'C4';'FC5';'FC6';'FC1';'FC2';'F7';'F8';'F3';'F4';'Fp1';'Fp2'};
 
 
 %//////////////////////////////////////////////////////////////////////////
@@ -168,7 +169,7 @@ save([exp.settings '_Settings'],'exp') %save these settings as a .mat file.
 
 %% Run preprocessing code
 tic %start timer
-Preprocessing_micb(exp)
+Preprocessing_OrientWheel(exp)
 toc %end timer
 
 %run analysis

@@ -168,8 +168,8 @@ outp(address_eeg,0);  %set pins to zero
 
 % /////////////////////////////////////////////////////////////////////////
 %% ----Trigger Stimulus
-% trigger_size = [0 0 1 1];
-trigger_size = [0 0 10 10];
+trigger_size = [0 0 1 1];
+% trigger_size = [0 0 10 10];
 
 qq = 1; %for recording timing of events in matlab
 

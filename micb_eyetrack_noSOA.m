@@ -168,7 +168,8 @@ outp(address_eeg,0);  %set pins to zero
 
 % /////////////////////////////////////////////////////////////////////////
 %% ----Trigger Stimulus
-trigger_size = [0 0 1 1];
+% trigger_size = [0 0 1 1];
+trigger_size = [0 0 10 10];
 
 qq = 1; %for recording timing of events in matlab
 
@@ -315,99 +316,84 @@ for k = -(practiceTrials+1):length(trialList)
         motion_howfar = ((-1) ^ (direction+1)) * (centerOfArray(1) - motion_changePoint) + ...
                         (-1) * abs(centerOfArray(2) - motion_flexion_height);
         if motion_howfar < 1 & ~motionOver
-            motionOver = 1;
+%             motionOver = 1;
             % Change movement direction
             movementIncrement = repmat(movementSpeed.*[cosd(angle) ...
                                     sind(angle) cosd(angle) sind(angle)], ...
-                                    numberOfGabors, 1)';
+                                    numberOfGabors, 1)';                  
         end
 
         % check for gabor change point, change, and flag
         gabor_howfar = ((-1) ^ (direction+1)) * (centerOfArray(1) - motion_changePoint) + ...
                        (-1) * abs(centerOfArray(2) - motion_flexion_height);
         if gabor_howfar < gabor_changePoint & ~gaborOver
-            gaborOver = 1;
+%             gaborOver = 1;
             %Change Gabor angle
-            rotation(target) = rotation(target) + rotationSize;
+            rotation(target) = rotation(target) + rotationSize; 
         end
 
         % Make triggers specific to the movement events
-%         if (motion_howfar < 1 & ~motionOver) && (gabor_howfar < gabor_changePoint & ~gaborOver)
-%             MoveStim()
-%             if angle ~= 0 %turn
-%                 DrawStim((21 + this_soa),trigger_size)  %(14,16,18,20,21,22,24,26,28)
-%                 % --track timing of events in matlab--
-%                 eventtrack(qq,1) = (21 + this_soa);
-%                 eventtrack(qq,2) = GetSecs();
-%                 qq = qq + 1;
-%                 % ------------------------------------
-%             elseif angle == 0 %straight
-%                 DrawStim((121 + this_soa),trigger_size) %(114,116,118,120,121,122,124,126,128)
-%                 % --track timing of events in matlab--
-%                 eventtrack(qq,1) = (121 + this_soa);
-%                 eventtrack(qq,2) = GetSecs();
-%                 qq = qq + 1;
-%                 % ------------------------------------
-%             end
-%         elseif motion_howfar < 1 & ~motionOver
-%             MoveStim()
-%             if angle ~= 0 %turn
-%                 DrawStim((30 + this_soa),trigger_size)  %(23,25,27,29,30,31,33,35,37)
-%                 % --track timing of events in matlab--
-%                 eventtrack(qq,1) = (30 + this_soa);
-%                 eventtrack(qq,2) = GetSecs();
-%                 qq = qq + 1;
-%                 % ------------------------------------
-%             elseif angle == 0 %straight
-%                 DrawStim((130 + this_soa),trigger_size) %(123,125,127,129,130,131,133,135,137)
-%                 % --track timing of events in matlab--
-%                 eventtrack(qq,1) = (130 + this_soa);
-%                 eventtrack(qq,2) = GetSecs();
-%                 qq = qq + 1;
-%                 % ------------------------------------
-%             end
-%         elseif gabor_howfar < gabor_changePoint & ~gaborOver
-%             MoveStim()
-%             if angle ~= 0 %turn
-%                 DrawStim((41 + this_soa),trigger_size)  %(34,36,38,40,41,42,44,46,48)
-%                 % --track timing of events in matlab--
-%                 eventtrack(qq,1) = (41 + this_soa);
-%                 eventtrack(qq,2) = GetSecs();
-%                 qq = qq + 1;
-%                 % ------------------------------------
-%             elseif angle == 0 %straight
-%                 DrawStim((141 + this_soa),trigger_size) %(134,136,138,140,141,142,144,146,148)
-%                 % --track timing of events in matlab--
-%                 eventtrack(qq,1) = (141 + this_soa);
-%                 eventtrack(qq,2) = GetSecs();
-%                 qq = qq + 1;
-%                 % ------------------------------------
-%             end 
-%         else
-            MoveStim() 
-            %KYLE --> this is where the issue starts. Issue is with the
-            %triggers below. See data file from subject 005 for these triggers in
-            %a real data file. All the code commented out above (line 334 to here) 
-            %was meant to send a trigger when the stimulus changed
-            %direction and the gabor patch rotated. None of the above code
-            %sent a trigger so I created below to do it. It does send a
-            %trigger, but just one where the eventtrack file saves multiple
-            %events (which is saved with the rest of the data).
+        if (motion_howfar < 1 & ~motionOver) && (gabor_howfar < gabor_changePoint & ~gaborOver)
+            motionOver = 1;
+            gaborOver = 1;
+            MoveStim()
             if angle ~= 0 %turn
                 DrawStim((21 + this_soa),trigger_size)  %(14,16,18,20,21,22,24,26,28)
                 % --track timing of events in matlab--
                 eventtrack(qq,1) = (21 + this_soa);
                 eventtrack(qq,2) = GetSecs();
                 qq = qq + 1;
+                % ------------------------------------
             elseif angle == 0 %straight
                 DrawStim((121 + this_soa),trigger_size) %(114,116,118,120,121,122,124,126,128)
                 % --track timing of events in matlab--
                 eventtrack(qq,1) = (121 + this_soa);
                 eventtrack(qq,2) = GetSecs();
                 qq = qq + 1;
+                % ------------------------------------
             end
-%             DrawStim(0,trigger_size) %don't want triggers every movement
-%         end
+            
+        elseif motion_howfar < 1 & ~motionOver
+            motionOver = 1;
+            MoveStim()
+            if angle ~= 0 %turn
+                DrawStim((30 + this_soa),trigger_size)  %(23,25,27,29,30,31,33,35,37)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (30 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
+            elseif angle == 0 %straight
+                DrawStim((130 + this_soa),trigger_size) %(123,125,127,129,130,131,133,135,137)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (130 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
+            end
+            
+        elseif gabor_howfar < gabor_changePoint & ~gaborOver
+            gaborOver = 1;
+            MoveStim()
+            if angle ~= 0 %turn
+                DrawStim((41 + this_soa),trigger_size)  %(34,36,38,40,41,42,44,46,48)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (41 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
+            elseif angle == 0 %straight
+                DrawStim((141 + this_soa),trigger_size) %(134,136,138,140,141,142,144,146,148)
+                % --track timing of events in matlab--
+                eventtrack(qq,1) = (141 + this_soa);
+                eventtrack(qq,2) = GetSecs();
+                qq = qq + 1;
+                % ------------------------------------
+            end 
+        else
+            MoveStim() 
+            DrawStim(0,trigger_size) %don't want triggers every movement
+        end
         
 %         MoveStim()
 %         DrawStim(0) %don't want triggers every movement

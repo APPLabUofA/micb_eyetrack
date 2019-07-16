@@ -18,7 +18,7 @@ try
     % Replicating event triggers when exp.events is a matrix
     if isempty(exp.epochs) == 1
         exp.epochs = exp.events;
-%         exp.epochs = cellstr(num2str(cell2mat(reshape(exp.events,1,size(exp.events,2)*size(exp.events,1)) )'))';
+%         exp.epochs = cellstr(num2str(cell2mat(reshape(exp.events,1,size(exp.events,1)*size(exp.events,2)) )'))';
     else
         exp.events = exp.epochs;
     end

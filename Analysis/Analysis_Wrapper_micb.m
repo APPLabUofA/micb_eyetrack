@@ -40,10 +40,10 @@ ccc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %        >>>>> Description of the saved dataset settings <<<<<
 % 
-% -> filt_byTargets_v3: winsize is 256, no ERSP baseline, epoched to targets; 
-%    Epoch limit [-1.5 1.5]. ERP baseline [-200 0]. Filter on [0.1 50]. 
-%    Cycles [2 0.8] (2 cycles at lowest freq & 8 at highest). Freq range [2 40]. 
-%    Freq increase in steps of 1.027 Hz. Timesout = 300. Padratio = 4. 
+% -> byFix_v1: winsize is 256, no ERSP baseline, epoched to targets; 
+%    Epoch limit [-0.5 3.5]. ERP baseline [-200 0]. Filter on [0.1 50]. 
+%    Cycles [2 0.8] (2 cycles at lowest freq & 8 at highest). Freq range [2 50]. 
+%    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -58,7 +58,7 @@ exp.setname = {'byFix_v1'}; % name each epoched set
 %       vs targets) within the same experimental condition.
 
 % List of participants' ids
-exp.participants = {'001','002','003','004'};
+exp.participants = {'001','002','003','004','005'};
 
 %% Blink Correction
 % the Blink Correction wants dissimilar events (different erps) seperated by 
@@ -78,10 +78,14 @@ exp.postocularthresh = [-500 500]; %Second happens after. Leave blank [] to skip
 %%%for each condition (lag 1-4 in this case), numbers correspond to
 %%%triggers that will be kept for each condition. All other triggers will
 %%%be removed
-exp.events = {[3,5,7,9,10,11,13,15,17],[103,105,107,109,110,111,113,115,117]};%can be list or matrix (sets x events)  
-exp.event_names = {['Fix','Fix','Fix','Fix','Fix','Fix','Fix','Fix','Fix'],...
-    ['Fix','Fix','Fix','Fix','Fix','Fix','Fix','Fix','Fix']}; %must be list or matrix (sets x events)
+exp.events = {[3 5 7 9 10 11 13 15 17];...
+              [103 105 107 109 110 111 113 115 117]};%can be list or matrix (sets x events)  
+exp.event_names = {'Fix'}; %must be list or matrix (sets x events)
+exp.setname = {'T';'S'}; %name the rows
 exp.suffix = {'byFix'};
+
+% Each item in the exp.events matrix will become a seperate dataset, including only those epochs referenced by the events in that item. 
+%e.g. 3 rows x 4 columns == 12 datasets/participant
 
 %% Electrode location
 %Where are your electrodes? (.ced file)
@@ -137,7 +141,7 @@ exp.epoch = 'on'; %on to epoch data; off to load previous data
 %%%indicates where you want to center your data (where time zero is)
 exp.epochs = {}; %must be list == length(exp.setname)
 exp.epochs_name = {};
-exp.epochslims = [-1.5 1.5]; %in seconds; epoched trigger is 0 e.g. [-1 2]
+exp.epochslims = [-0.5 3.5]; %in seconds; epoched trigger is 0 e.g. [-1 2]
 exp.epochbaseline = [-200 0]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
 
 

@@ -387,12 +387,9 @@ for k = -(practiceTrials+1):length(trialList)
             MoveStim() 
             %KYLE --> this is where the issue starts. Issue is with the
             %triggers below. See data file from subject 005 for these triggers in
-            %a real data file. All the code commented out above (line 334 to here) 
-            %was meant to send a trigger when the stimulus changed
-            %direction and the gabor patch rotated. None of the above code
-            %sent a trigger so I created below to do it. It does send a
-            %trigger, but just one where the eventtrack file saves multiple
-            %events (which is saved with the rest of the data).
+            %a real data file. All the code commented out above (line 334 to ) was meant to
+            % urpose was to send a trigger when the
+            %stimulus changed 
             if angle ~= 0 %turn
                 DrawStim((21 + this_soa),trigger_size)  %(14,16,18,20,21,22,24,26,28)
                 % --track timing of events in matlab--

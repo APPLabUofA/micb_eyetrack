@@ -586,6 +586,9 @@ for k = -(practiceTrials+1):length(trialList)
             out_incorrect_gabor(k) = i; %% adds value i to the incorrect gabor array at trial k
         else
             out_incorrect_gabor(k) = NaN; %so dim matches other out_ variables
+            % if a given trial is both incorrect and out_incorrect_gabor ==
+            % Nan then that means that the participant clicked outside of
+            % any of the potential gabors - exclude for further analysis
         end
     end
     %//////////////////////////////////////////////////////////////////////

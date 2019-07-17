@@ -42,7 +42,7 @@ ccc
 % 
 % -> byFix_v1: winsize is 256, no ERSP baseline, epoched to targets; 
 %    Epoch limit [-0.5 3.5]. ERP baseline [-200 0]. Filter on [0.1 50]. 
-%    Cycles [2 0.8] (2 cycles at lowest freq & 8 at highest). Freq range [2 50]. 
+%    Cycles [2 0.8] (2 cycles at lowest freq & 10 at highest). Freq range [2 50]. 
 %    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,13 +52,13 @@ exp.name = 'micb';
 exp.conds = ''; %conds is usually used for comparing the same type of trials
                 %under different conditions (e.g., stimulation vs sham)
 exp.pathname = 'M:\Experiments\micb_eyetrack\Data\EEG\'; %path of EEG data
-exp.setname = {'byFix_v1'}; % name each epoched set
+exp.settingname = 'byFix_v1'; % name each epoched set
 % note: the meaning of set here is to identify the type of analysis done.
 %       set is usually used to identify different trial types (e.g., standards
 %       vs targets) within the same experimental condition.
 
 % List of participants' ids
-exp.participants = {'001','002','003','004','005'};
+exp.participants = {'001','002','003','004','005','006','007','008'};
 
 %% Blink Correction
 % the Blink Correction wants dissimilar events (different erps) seperated by 
@@ -139,7 +139,8 @@ exp.freqrange = [exp.cycles(1):50]; %when doing wavelet
 %% Epoching the data
 exp.epoch = 'on'; %on to epoch data; off to load previous data
 %%%indicates where you want to center your data (where time zero is)
-exp.epochs = {}; %must be list == length(exp.setname)
+exp.epochs = {'3','5','7','9','10','11','13','15','17',...
+    '103','105','107','109','110','111','113','115','117'}; %must be list == length(exp.setname)
 exp.epochs_name = {};
 exp.epochslims = [-0.5 3.5]; %in seconds; epoched trigger is 0 e.g. [-1 2]
 exp.epochbaseline = [-200 0]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
@@ -163,10 +164,8 @@ exp.singtrlelec_name = {'Oz';'Pz';'Cz';'FCz';'Fz';'O1';'O2';'P3';'P4';'P7';'P8';
 %//////////////////////////////////////////////////////////////////////////
 %% Save your pipeline settings
 % The settings will be saved as a new folder. It lets you save multiple datasets with different preprocessing parameters.
-exp.settings = char(exp.setname); %name settings
-% `````````````````````````````````````````````````````````````````````````
 % Saving will help you remember what settings were used in each dataset
-save([exp.settings '_Settings'],'exp') %save these settings as a .mat file. 
+save([exp.settingname '_Settings'],'exp') %save these settings as a .mat file. 
 %//////////////////////////////////////////////////////////////////////////
 
 

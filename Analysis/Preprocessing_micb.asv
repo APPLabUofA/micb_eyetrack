@@ -18,7 +18,7 @@ try
     % Replicating event triggers when exp.events is a matrix
     if isempty(exp.epochs) == 1
         exp.epochs = exp.events;
-%         exp.epochs = cellstr(num2str(cell2mat(reshape(exp.events,1,size(exp.events,1)*size(exp.events,2)) )'))';
+%         exp.epochs = cellstr(num2str(cell2mat(reshape(exp.events,1,size(exp.events,2)*size(exp.events,1)) )'))';
     else
         exp.events = exp.epochs;
     end
@@ -90,23 +90,19 @@ try
                 EEG = pop_rmbase(EEG, exp.epochbaseline);
   
                 %% Get behavior data and add to EEG structure
-                [error_deg] = getBEHdata_OrientWheel(part_name);
-                % add error deg to epoch structure
-                if length(EEG.epoch) == length(error_deg)
-                   EEG.error_deg = error_deg;
-                end
+                [out_soa,responded,out_angle] = getBEHdata_micb(part_name);
+                % add behavioral data to epoch structure
+                EEG.beh.out_soa = out_soa;
+                EEG.beh.responded = responded;
+                EEG.beh.out_angle = out_angle;
+                clear out_soa responded out_angle
+                
                 
                 %% Reject practice trials from data
                 % only specific to subject 8 % only when using these specific settings
-                if (strcmpi(part_name,'subj8') && strcmpi(exp.settings,'filt_byTargets_v3'))...
-                    || (strcmpi(part_name,'subj8') && strcmpi(exp.settings,'filt_byTargets_v1'))...
-                    || (strcmpi(part_name,'subj8') && strcmpi(exp.settings,'filt_byTargets_v2'))...
-                    || (strcmpi(part_name,'subj8') && strcmpi(exp.settings,'byTargets_v1'))...
-                    || (strcmpi(part_name,'subj8') && strcmpi(exp.settings,'filt_byCatchTargets_v1_wav'))
-                    rej_practice = zeros(1,length(EEG.epoch));
-                    rej_practice(1,1:18) = 1; %mark the first 18 trials for removal
-                    EEG = pop_rejepoch(EEG, rej_practice, 0);
-                end
+                rej_practice = zeros(1,length(EEG.epoch));
+                rej_practice(1,1:20) = 1; %mark the first 20 trials for removal
+                EEG = pop_rejepoch(EEG, rej_practice, 0);
                 clear rej_practice
                 
 

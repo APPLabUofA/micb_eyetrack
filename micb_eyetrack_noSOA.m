@@ -72,6 +72,8 @@ textSize = round(rect(4)*.02);
 Screen('TextSize',w,textSize);
 directionNames = {'Right' 'Left'};
 
+black = [0,0,0];   %BlackIndex(window);
+
 % Get presentation timing information
 refresh = Screen('GetFlipInterval',w); % Get flip refresh rate
 slack = refresh/2; % Divide by 2 to get slack
@@ -333,7 +335,7 @@ for k = -(practiceTrials+1):length(trialList)
         end
 
         % Make triggers specific to the movement events
-        if (motion_howfar < 1 & ~motionOver) && (gabor_howfar < gabor_changePoint & ~gaborOver)
+        if (motion_howfar < 1 & ~motionOver) & (gabor_howfar < gabor_changePoint & ~gaborOver)
             motionOver = 1;
             gaborOver = 1;
             MoveStim()
@@ -415,11 +417,14 @@ for k = -(practiceTrials+1):length(trialList)
     SetMouse(xc,yc)
     
     Screen('FillRect',w,bgcolor,rect);
+    Screen('FillRect',w,black,trigger_size);
     DrawFormattedText(w,'Click the patch that rotated:','center',yc-r-g);
     Screen('DrawTextures',w,gaborPatch,[],centeredRects,rotation);
     Screen('FillOval',w,fixationColor,[xc-fixationSize yc-fixationSize xc+fixationSize yc+fixationSize]);
     if angle ~= 0 %turn
         Screen('FillRect',w,Vpixx2Vamp((50 + this_soa)),trigger_size); %(43,45,47,49,50,51,53,55,57)
+        Screen('Flip',w);
+        Screen('FillRect',w,black,trigger_size);
         Screen('Flip',w);
         % --track timing of events in matlab--
         eventtrack(qq,1) = (50 + this_soa);
@@ -428,6 +433,8 @@ for k = -(practiceTrials+1):length(trialList)
         % ------------------------------------
     elseif angle == 0 %straight
         Screen('FillRect',w,Vpixx2Vamp((150 + this_soa)),trigger_size); %(143,145,147,149,150,151,153,155,157)
+        Screen('Flip',w);
+        Screen('FillRect',w,black,trigger_size);
         Screen('Flip',w);
         % --track timing of events in matlab--
         eventtrack(qq,1) = (150 + this_soa);
@@ -678,7 +685,11 @@ function DrawStim(num,trigger_size)
     centerOfArray = [(min(arrayRects(1,:))+max(arrayRects(3,:)))/2 (min(arrayRects(2,:))+max(arrayRects(4,:)))/2];
     fixationRect = round([centerOfArray(1)-fixationSize centerOfArray(2)-fixationSize centerOfArray(1)+fixationSize centerOfArray(2)+fixationSize]);
     Screen('FillOval',w,fixationColor,fixationRect); 
-    Screen('FillRect',w,Vpixx2Vamp(num),trigger_size);
+    if num==0
+        Screen('FillRect',w,black,trigger_size);
+    else
+        Screen('FillRect',w,Vpixx2Vamp(num),trigger_size);
+    end
     Screen('Flip',w);
 end
 

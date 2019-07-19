@@ -396,9 +396,8 @@ for k = -(practiceTrials+1):length(trialList)
             MoveStim() 
             DrawStim(0,trigger_size) %don't want triggers every movement
         end
-        
-%         MoveStim()
-%         DrawStim(0) %don't want triggers every movement
+        MoveStim() 
+        DrawStim(0,trigger_size) %don't want extra triggers every movement
     end
 
 
@@ -424,8 +423,6 @@ for k = -(practiceTrials+1):length(trialList)
     if angle ~= 0 %turn
         Screen('FillRect',w,Vpixx2Vamp((50 + this_soa)),trigger_size); %(43,45,47,49,50,51,53,55,57)
         Screen('Flip',w);
-        Screen('FillRect',w,black,trigger_size);
-        Screen('Flip',w);
         % --track timing of events in matlab--
         eventtrack(qq,1) = (50 + this_soa);
         eventtrack(qq,2) = GetSecs();
@@ -433,8 +430,6 @@ for k = -(practiceTrials+1):length(trialList)
         % ------------------------------------
     elseif angle == 0 %straight
         Screen('FillRect',w,Vpixx2Vamp((150 + this_soa)),trigger_size); %(143,145,147,149,150,151,153,155,157)
-        Screen('Flip',w);
-        Screen('FillRect',w,black,trigger_size);
         Screen('Flip',w);
         % --track timing of events in matlab--
         eventtrack(qq,1) = (150 + this_soa);
@@ -463,6 +458,7 @@ for k = -(practiceTrials+1):length(trialList)
     if clicked==1&&x>=correctRect(1)&&x<=correctRect(3)&&y>=correctRect(2)&&y<=correctRect(4)
         accuracy = 1;
         Screen('FillRect',w,bgcolor,rect);
+        Screen('FillRect',w,black,trigger_size);
         DrawFormattedText(w,'Correct!','center','center');
         RT = GetSecs-startTime;
         if angle ~= 0 %turn
@@ -489,6 +485,7 @@ for k = -(practiceTrials+1):length(trialList)
                 accuracy = 0;
                 gabor_press = 1;
                 Screen('FillRect',w,bgcolor,rect);
+                Screen('FillRect',w,black,trigger_size);
                 DrawFormattedText(w,'Incorrect patch','center','center');
                 RT = GetSecs-startTime;
                 if angle ~= 0 %turn
@@ -516,6 +513,7 @@ for k = -(practiceTrials+1):length(trialList)
 %             accuracy = -1;
             accuracy = 0;
             Screen('FillRect',w,bgcolor,rect);
+            Screen('FillRect',w,black,trigger_size);
             DrawFormattedText(w,'Incorrect patch','center','center'); %%%Please Click on a Gabor
             RT = GetSecs-startTime;
             if angle ~= 0 %turn
@@ -539,6 +537,7 @@ for k = -(practiceTrials+1):length(trialList)
         end
     elseif clicked == 0
         Screen('FillRect',w,bgcolor,rect);
+        Screen('FillRect',w,black,trigger_size);
         DrawFormattedText(w,'Please respond more quickly','center','center');
         if angle ~= 0 %turn
             Screen('FillRect',w,Vpixx2Vamp((81 + this_soa)),trigger_size); %(74,76,78,80,81,82,84,86,88)
@@ -685,11 +684,7 @@ function DrawStim(num,trigger_size)
     centerOfArray = [(min(arrayRects(1,:))+max(arrayRects(3,:)))/2 (min(arrayRects(2,:))+max(arrayRects(4,:)))/2];
     fixationRect = round([centerOfArray(1)-fixationSize centerOfArray(2)-fixationSize centerOfArray(1)+fixationSize centerOfArray(2)+fixationSize]);
     Screen('FillOval',w,fixationColor,fixationRect); 
-    if num==0
-        Screen('FillRect',w,black,trigger_size);
-    else
-        Screen('FillRect',w,Vpixx2Vamp(num),trigger_size);
-    end
+    Screen('FillRect',w,Vpixx2Vamp(num),trigger_size);
     Screen('Flip',w);
 end
 

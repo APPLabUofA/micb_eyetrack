@@ -294,6 +294,8 @@ for k = -(practiceTrials+1):length(trialList)
     trialOver = 0;
     motionOver = 0; % motion change
     gaborOver = 0; % gabor change
+    motionOverT = 0; % motion change trigger
+    gaborOverT = 0; % gabor change trigger
     movementIncrement = repmat([movementSpeed 0 movementSpeed 0],numberOfGabors,1)';
     
     DrawStim(trig,trigger_size) % draw stimulus screen
@@ -318,7 +320,7 @@ for k = -(practiceTrials+1):length(trialList)
         motion_howfar = ((-1) ^ (direction+1)) * (centerOfArray(1) - motion_changePoint) + ...
                         (-1) * abs(centerOfArray(2) - motion_flexion_height);
         if motion_howfar < 1 & ~motionOver
-%             motionOver = 1;
+            motionOver = 1;
             % Change movement direction
             movementIncrement = repmat(movementSpeed.*[cosd(angle) ...
                                     sind(angle) cosd(angle) sind(angle)], ...
@@ -329,15 +331,15 @@ for k = -(practiceTrials+1):length(trialList)
         gabor_howfar = ((-1) ^ (direction+1)) * (centerOfArray(1) - motion_changePoint) + ...
                        (-1) * abs(centerOfArray(2) - motion_flexion_height);
         if gabor_howfar < gabor_changePoint & ~gaborOver
-%             gaborOver = 1;
+            gaborOver = 1;
             %Change Gabor angle
             rotation(target) = rotation(target) + rotationSize; 
         end
 
         % Make triggers specific to the movement events
-        if (motion_howfar < 1 & ~motionOver) & (gabor_howfar < gabor_changePoint & ~gaborOver)
-            motionOver = 1;
-            gaborOver = 1;
+        if motionOver && gaborOver && ~motionOverT && ~gaborOverT 
+            motionOverT = 1;
+            gaborOverT = 1;
             MoveStim()
             if angle ~= 0 %turn
                 DrawStim((21 + this_soa),trigger_size)  %(14,16,18,20,21,22,24,26,28)
@@ -355,8 +357,8 @@ for k = -(practiceTrials+1):length(trialList)
                 % ------------------------------------
             end
             
-        elseif motion_howfar < 1 & ~motionOver
-            motionOver = 1;
+        elseif motionOver && ~gaborOver && ~motionOverT
+            motionOverT = 1;
             MoveStim()
             if angle ~= 0 %turn
                 DrawStim((30 + this_soa),trigger_size)  %(23,25,27,29,30,31,33,35,37)
@@ -374,8 +376,8 @@ for k = -(practiceTrials+1):length(trialList)
                 % ------------------------------------
             end
             
-        elseif gabor_howfar < gabor_changePoint & ~gaborOver
-            gaborOver = 1;
+        elseif ~motionOver && gaborOver && ~gaborOverT
+            gaborOverT = 1;
             MoveStim()
             if angle ~= 0 %turn
                 DrawStim((41 + this_soa),trigger_size)  %(34,36,38,40,41,42,44,46,48)
@@ -436,8 +438,14 @@ for k = -(practiceTrials+1):length(trialList)
         eventtrack(qq,2) = GetSecs();
         qq = qq + 1;
         % ------------------------------------
-    end     
-%     Screen('Flip',w);
+    end
+    % Again no trigger
+    Screen('FillRect',w,bgcolor,rect);
+    Screen('FillRect',w,black,trigger_size);
+    DrawFormattedText(w,'Click the patch that rotated:','center',yc-r-g);
+    Screen('DrawTextures',w,gaborPatch,[],centeredRects,rotation);
+    Screen('FillOval',w,fixationColor,[xc-fixationSize yc-fixationSize xc+fixationSize yc+fixationSize]);
+    Screen('Flip',w);
     
     accuracy = 2;
     startTime = GetSecs;

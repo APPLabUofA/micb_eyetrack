@@ -172,6 +172,7 @@ try
                 for i_event = 1:nevents
                     EEG = pop_selectevent( tempEEG, 'type', exp.events{i_set,i_event}, 'deleteevents','on','deleteepochs','on','invertepochs','off');
                     EEG = pop_editset(EEG, 'setname', [part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set}] );
+                    EEG = pop_editset(EEG, 'condition', exp.setname{i_set} );
                     EEG = pop_saveset( EEG, 'filename',[part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '.set'],'filepath',[exp.pathname '\' exp.setname{i_set} '\Segments\']);
                 end
 % ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::                 

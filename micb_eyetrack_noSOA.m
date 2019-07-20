@@ -10,7 +10,7 @@
 %
 % ==== TRIGGERS ====
 %
-% Start eye tracker: 90
+% Start eye tracker: 199
 % End eye tracker: 99
 % Break: 2
 % 
@@ -20,6 +20,7 @@
 %   Movement & Gabor: soas+21 (14,16,18,20,21,22,24,26,28)
 %   Movement:         soas+30 (23,25,27,29,30,31,33,35,37)
 %   Gabor:            soas+41 (34,36,38,40,41,42,44,46,48)
+% Trial end: soas+90 (83,85,87,89,90,91,93,95,97)
 % Response screen: soas+50 (43,45,47,49,50,51,53,55,57)  
 % Response:
 %   Correct: soas+61 (54,56,58,60,61,62,64,66,68)
@@ -32,6 +33,7 @@
 %   Movement & Gabor: soas+121 (114,116,118,120,121,122,124,126,128)
 %   Movement:         soas+130 (123,125,127,129,130,131,133,135,137)
 %   Gabor:            soas+141 (134,136,138,140,141,142,144,146,148)
+% Trial end: soas+190 (183,185,187,189,190,191,193,195,197)
 % Response screen: soas+150 (143,145,147,149,150,151,153,155,157)  
 % Response:
 %   Correct: soas+161 (154,156,158,160,161,162,164,166,168)
@@ -66,11 +68,12 @@ bgcolor = [128 128 128];
 [w rect] = Screen('OpenWindow',0,bgcolor);
 xc = rect(3)./2;
 yc = rect(4)./2;
-xBorder = round(rect(3)./6);
+% xBorder = round(rect(3)./6);
 yBorder = round(rect(4)./6);
+xBorder = 600;
 textSize = round(rect(4)*.02);
 Screen('TextSize',w,textSize);
-directionNames = {'Right' 'Left'};
+directionNames = {'Right' 'Left'}; %towards right is 0
 
 black = [0,0,0];   %BlackIndex(window);
 
@@ -186,7 +189,7 @@ Screen('Flip',w)
 KbWait;
 
 Screen('FillRect',w,bgcolor);
-Screen('FillRect',w,Vpixx2Vamp(90),trigger_size);
+Screen('FillRect',w,Vpixx2Vamp(199),trigger_size);
 eyetrack_on = Screen('Flip',w);
 % system('C:\Users\user\Downloads\CoreSDK\CoreSDK\samples\Streams\Interaction_Streams_101\bin\Debug\Interaction_Streams_101.exe &');
 system('M:\Experiments\micb_eyetrack\CoreSDK\CoreSDK\samples\Streams\Interaction_Streams_101\bin\Debug\Interaction_Streams_101.exe &');
@@ -309,12 +312,63 @@ for k = -(practiceTrials+1):length(trialList)
     while ~trialOver
 
         % check if reached the edge and set flag
-        if max(arrayRects(3, :)) > rect(3)-xBorder || ...
-                max(arrayRects(4, :)) > rect(4)-yBorder || ...
-                min(arrayRects(3, :)) < xBorder || ...
-                min(arrayRects(4, :)) < yBorder
-            trialOver = 1;
+        if angle == 0
+            if direction == 1
+                if max(arrayRects(3, :)) > rect(3)-xBorder || ...            
+                        max(arrayRects(4, :)) > rect(4)-yBorder || ... 
+                        min(arrayRects(3, :)) < xBorder || ...         
+                        min(arrayRects(4, :)) < yBorder                
+                    trialOver = 1;
+                end
+            elseif direction == 0
+                if max(arrayRects(1, :)) > rect(3)-xBorder || ...            
+                        max(arrayRects(4, :)) > rect(4)-yBorder || ... 
+                        min(arrayRects(3, :)) < xBorder || ...         
+                        min(arrayRects(4, :)) < yBorder                
+                    trialOver = 1;
+                end   
+            end
+        elseif angle == 90
+            if direction == 1
+                if max(arrayRects(3, :)) > rect(3)-xBorder || ...            
+                        max(arrayRects(4, :)) > rect(4)-yBorder || ... 
+                        min(arrayRects(3, :)) < xBorder || ...         
+                        min(arrayRects(4, :)) < yBorder                
+                    trialOver = 1;
+                end
+            elseif direction == 0
+                if max(arrayRects(1, :)) > rect(3)-xBorder || ...            
+                        max(arrayRects(2, :)) > rect(4)-yBorder || ... 
+                        min(arrayRects(3, :)) < xBorder || ...         
+                        min(arrayRects(2, :)) < yBorder                
+                    trialOver = 1;
+                end   
+            end
+        elseif angle == 270
+            if direction == 1
+                if max(arrayRects(3, :)) > rect(3)-xBorder || ...            
+                        max(arrayRects(2, :)) > rect(4)-yBorder || ... 
+                        min(arrayRects(3, :)) < xBorder || ...         
+                        min(arrayRects(4, :)) < yBorder                
+                    trialOver = 1;
+                end
+            elseif direction == 0
+                if max(arrayRects(1, :)) > rect(3)-xBorder || ...            
+                        max(arrayRects(2, :)) > rect(4)-yBorder || ... 
+                        min(arrayRects(3, :)) < xBorder || ...         
+                        min(arrayRects(4, :)) < yBorder                
+                    trialOver = 1;
+                end   
+            end
         end
+        
+        
+%         if max(arrayRects(3, :)) > 1320 || ...       
+%                 max(arrayRects(4, :)) > rect(4)-yBorder || ... %900
+%                 min(arrayRects(3, :)) < 600 || ...
+%                 min(arrayRects(4, :)) < yBorder
+%             trialOver = 1;
+%         end
 
         % check for first motion change point, change, and flag
         motion_howfar = ((-1) ^ (direction+1)) * (centerOfArray(1) - motion_changePoint) + ...
@@ -394,9 +448,9 @@ for k = -(practiceTrials+1):length(trialList)
                 qq = qq + 1;
                 % ------------------------------------
             end 
-        else
-            MoveStim() 
-            DrawStim(0,trigger_size) %don't want triggers every movement
+%         else
+%             MoveStim() 
+%             DrawStim(0,trigger_size) %don't want triggers every movement
         end
         MoveStim() 
         DrawStim(0,trigger_size) %don't want extra triggers every movement
@@ -410,6 +464,23 @@ for k = -(practiceTrials+1):length(trialList)
 % /////////////////////////////////////////////////////////////////////////    
     %% Probe %%
     Screen('FillRect',w,bgcolor,rect);
+    Screen('FillRect',w,Vpixx2Vamp(0),trigger_size);
+     if angle ~= 0 %turn
+        Screen('FillRect',w,Vpixx2Vamp((90 + this_soa)),trigger_size);  %(83,85,87,89,90,91,93,95,97)
+        % --track timing of events in matlab--
+        eventtrack(qq,1) = (90 + this_soa);
+        eventtrack(qq,2) = GetSecs();
+        qq = qq + 1;
+        % ------------------------------------
+    elseif angle == 0 %straight
+        Screen('FillRect',w,Vpixx2Vamp((190 + this_soa)),trigger_size); %(183,185,187,189,190,191,193,195,197)
+        % --track timing of events in matlab--
+        eventtrack(qq,1) = (190 + this_soa);
+        eventtrack(qq,2) = GetSecs();
+        qq = qq + 1;
+        % ------------------------------------
+    end 
+    Screen('Flip',w);
     Screen('FillRect',w,Vpixx2Vamp(0),trigger_size);
     Screen('Flip',w);
     WaitSecs(.1);

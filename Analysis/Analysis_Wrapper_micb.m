@@ -51,14 +51,16 @@ ccc
 exp.name = 'micb';
 exp.conds = ''; %conds is usually used for comparing the same type of trials
                 %under different conditions (e.g., stimulation vs sham)
-exp.pathname = 'M:\Experiments\micb_eyetrack\Data\EEG\'; %path of EEG data
-exp.settingname = 'byFix_v1'; % name each epoched set
+exp.pathname = 'M:\Data\micb_eyetrack\EEG\'; %path of EEG data
+% exp.settingname = 'byFix_v1'; % name each epoched set
+
 % note: the meaning of set here is to identify the type of analysis done.
 %       set is usually used to identify different trial types (e.g., standards
 %       vs targets) within the same experimental condition.
 
 % List of participants' ids
-exp.participants = {'001','002','003','004','005','006','007','008'};
+% **subjects 001-004 do not have triggers for direction and gabor change
+exp.participants = {'002','003','004','005','006','007','008','009','010','011','012'};
 
 %% Blink Correction
 % the Blink Correction wants dissimilar events (different erps) seperated by 
@@ -142,8 +144,8 @@ exp.epoch = 'on'; %on to epoch data; off to load previous data
 exp.epochs = {'3','5','7','9','10','11','13','15','17',...
     '103','105','107','109','110','111','113','115','117'}; %must be list == length(exp.setname)
 exp.epochs_name = {};
-exp.epochslims = [-0.5 3.5]; %in seconds; epoched trigger is 0 e.g. [-1 2]
-exp.epochbaseline = [-200 0]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
+exp.epochslims = [-2.5 3.5]; %in seconds; epoched trigger is 0 e.g. [-1 2]
+exp.epochbaseline = [-2067 -1867]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
 
 
 %% Time-Frequency settings

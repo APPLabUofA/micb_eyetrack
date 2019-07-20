@@ -1,4 +1,4 @@
-function [varargout] = load_EEGdata_micb()
+% function load_EEGdata_micb()
 
 
 ccc %clear variables & close windows
@@ -81,7 +81,7 @@ for i_set = 1:nsets
                     EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.setname{i_set} '\Segments\']);
                     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
                 end
-            elseif strcmpi('on',anal.tf) == 1 || strcmpi('on',anal.singletrials) == 1 %if we are loading time-frequency data only, then we just need one of these.
+            elseif strcmpi('on',anal.tf) == 1 % if we are loading time-frequency data only, then we just need one of these.
                 if i_part == 1 && i_set == 1 && i_event == 1
                     EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.setname{i_set} '\Segments\']);
                     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
@@ -146,16 +146,14 @@ varargout{3} = exp;
 varargout{4} = ALLEEG;
 varargout{5} = EEG;
 
-% if loading TF data
-if strcmpi('on',anal.tf) == 1
+anal.tf = 'on'; % if loading TF data
+anal.singletrials = 'on'; % if loading single trial data
+anal.segments = 'on'; % if loading epochs
+if anal.tf == 'on' % if loading TF data
     varargout{6} = ersp;
     varargout{7} = itc;
 end
-
-% if loading single trial data
-if strcmpi('on',anal.singletrials) == 1 
-    varargout{8} = all_ersp;
-end
+varargout{8} = all_ersp;
 
 % -------------------------------------------------------------------------
 

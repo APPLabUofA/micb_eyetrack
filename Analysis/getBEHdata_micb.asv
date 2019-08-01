@@ -1,0 +1,33 @@
+function [out_soa,responded,out_angle,accuracy,direction,incorrect_gabor,out_RT] =...
+    getBEHdata_micb(part_name)
+
+
+%Find output filename
+Filename = dir(['M:\Data\micb_eyetrack\beh\' part_name '*']);
+
+%% Save data
+load(['M:\Data\micb_eyetrack\beh\' Filename.name]);
+
+% Remove practice trials from behavioral data
+out_soa = out_soa((practiceTrials+1):totalTrials);
+responded = responded((practiceTrials+1):totalTrials);
+out_angle = out_angle((practiceTrials+1):totalTrials);
+accuracy = out_accuracy((practiceTrials+1):totalTrials);
+direction = out_direction((practiceTrials+1):totalTrials); %0 = towards right
+incorrect_gabor = out_incorrect_gabor((practiceTrials+1):totalTrials);
+out_RT = out_RT((practiceTrials+1):totalTrials);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

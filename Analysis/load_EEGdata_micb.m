@@ -1,15 +1,15 @@
-function [varargout] = load_EEGdata_micb()
+% function [varout] = load_EEGdata_micb()
 
 
 ccc %clear variables & close windows
 
 % -------------------------------------------------------------------------
 % Load processing settings
-load('byFix_v1_Settings.mat');  %#ok<*LOAD>
+load('byFix_v2_Settings.mat');  %#ok<*LOAD>
 
 % -------------------------------------------------------------------------
 anal.tf = 'on'; % if loading TF data
-anal.singletrials = 'on'; % if loading single trial data
+anal.singletrials = 'off'; % if loading single trial data
 anal.segments = 'on'; % if loading epochs
 anal.tfelecs = exp.brainelecs; %#ok<*NODEF> %electrodes
 anal.singletrialselecs = exp.singletrialselecs; %single trial electrodes
@@ -59,12 +59,12 @@ for i_set = 1:nsets
             if strcmpi('on',anal.tf) == 1 % only load these variables if we are loading time-frequency data
                     
                 %The variable ersp will be a 6D variable: (participants x sets x events x electrodes x frequencies x timepoints).
-                ersp(i_part,i_set,i_event,:,:,:) = struct2array(load([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'ersp'));
-                itc(i_part,i_set,i_event,:,:,:) = struct2array(load([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'itc'));
+                ersp(i_part,i_set,i_event,:,:,:) = struct2array(load([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'ersp'));
+                itc(i_part,i_set,i_event,:,:,:) = struct2array(load([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'itc'));
 
                 if i_part == 1 && i_set == 1 && i_event == 1 %load time and freq data
-                    times = struct2array(load([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'times'));
-                    freqs = struct2array(load([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'freqs'));
+                    times = struct2array(load([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'times'));
+                    freqs = struct2array(load([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'freqs'));
                 end
 
             end
@@ -74,16 +74,16 @@ for i_set = 1:nsets
             % Load the EEGLAB datasets, if needed.
             if strcmpi('on',anal.segments) == 1 || strcmp('on',anal.singletrials) == 1 % only load these variables if we are loading either ERP or single trial data
                 try
-                    EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.setname{i_set} '\Segments\']);
+                    EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.suffix{1} '\' exp.setname{i_set} '\Segments\']);
                     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
                 catch
                     WaitSecs(.5)
-                    EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.setname{i_set} '\Segments\']);
+                    EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.suffix{1} '\' exp.setname{i_set} '\Segments\']);
                     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
                 end
             elseif strcmpi('on',anal.tf) == 1 || strcmpi('on',anal.singletrials) == 1 %if we are loading time-frequency data only, then we just need one of these.
                 if i_part == 1 && i_set == 1 && i_event == 1
-                    EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.setname{i_set} '\Segments\']);
+                    EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.suffix{1} '\' exp.setname{i_set} '\Segments\']);
                     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
                 end
             end
@@ -97,8 +97,8 @@ for i_set = 1:nsets
                 
                 % Loads the time values and freqs
                 if i_part == 1 && i_set == 1 && i_event == 1
-                    times = struct2array(load([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'times'));
-                    freqs = struct2array(load([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'freqs'));
+                    times = struct2array(load([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'times'));
+                    freqs = struct2array(load([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\' 'Wav_' filename '.mat'],'freqs'));
                 end
                 
                 %This block finds the latency of each event listed in exp.events, and the trials it appeared on.
@@ -117,11 +117,11 @@ for i_set = 1:nsets
                     
                     % all_ersp is (participant x electrode).trials(freq x time x trial)
                      try %Unfortunately, this load procedure can break sometimes in a non-reproducible way. So if an error happens here, we wait half a second and try again.
-                        channeldata = load([exp.pathname '\' exp.setname{i_set} '\SingleTrials\' part_name '\' EEG.chanlocs(i_chan).labels '_SingleTrials_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '_Wav.mat'],'elec_all_ersp');
+                        channeldata = load([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\SingleTrials\' part_name '\' EEG.chanlocs(i_chan).labels '_SingleTrials_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '_Wav.mat'],'elec_all_ersp');
                         all_ersp(i_part,i_chan) = struct2cell(channeldata);
                     catch
                         WaitSecs(.5)
-                        channeldata = load([exp.pathname '\' exp.setname{i_set} '\SingleTrials\' part_name '\' EEG.chanlocs(i_chan).labels '_SingleTrials_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '_Wav.mat'],'elec_all_ersp');
+                        channeldata = load([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\SingleTrials\' part_name '\' EEG.chanlocs(i_chan).labels '_SingleTrials_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '_Wav.mat'],'elec_all_ersp');
                         all_ersp(i_part,i_chan) = struct2cell(channeldata);
                      end
                     clear channeldata
@@ -140,21 +140,21 @@ eeglab redraw
 
 % -------------------------------------------------------------------------
 % Variables for output by function
-varargout{1} = times;
-varargout{2} = freqs;
-varargout{3} = exp;
-varargout{4} = ALLEEG;
-varargout{5} = EEG;
+varout{1} = times;
+varout{2} = freqs;
+varout{3} = exp;
+varout{4} = ALLEEG;
+varout{5} = EEG;
 
 % if loading TF data
 if strcmpi('on',anal.tf) == 1
-    varargout{6} = ersp;
-    varargout{7} = itc;
+    varout{6} = ersp;
+    varout{7} = itc;
 end
 
 % if loading single trial data
 if strcmpi('on',anal.singletrials) == 1 
-    varargout{8} = all_ersp;
+    varout{8} = all_ersp;
 end
 
 % -------------------------------------------------------------------------

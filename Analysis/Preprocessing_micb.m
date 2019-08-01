@@ -17,8 +17,8 @@ try
 
     % Replicating event triggers when exp.events is a matrix
     if isempty(exp.epochs) == 1
-%         exp.epochs = exp.events;
-        exp.epochs = cellstr(num2str(cell2mat(reshape(exp.events,1,size(exp.events,2)*size(exp.events,1)) )'))';
+        exp.epochs = exp.events;
+%         exp.epochs = cellstr(num2str(cell2mat(reshape(exp.events,1,size(exp.events,2)*size(exp.events,1)) )'))';
     elseif isempty(exp.events) == 1
         exp.events = exp.epochs;
     end
@@ -36,8 +36,8 @@ try
         sprintf(exp.setname{i_set})
         
         % if folder doesn't exist yet, create one
-        if ~exist([exp.pathname  '\' exp.setname{i_set} '\Segments\'])
-            mkdir([exp.pathname  '\' exp.setname{i_set} '\Segments\']);
+        if ~exist([exp.pathname  '\' exp.suffix{1} '\' exp.setname{i_set} '\Segments\'])
+            mkdir([exp.pathname  '\' exp.suffix{1} '\' exp.setname{i_set} '\Segments\']);
         end
         
         %initialize EEGLAB
@@ -47,7 +47,8 @@ try
         nevents = length(exp.events(i_set,:));
         
         %% Load data and channel locations
-        for i_part = 1:nparts
+%         for i_part = 1:nparts
+        for i_part = 2
             
             part_name = exp.participants{i_part}; %this is cuz subject ids are in the form 'subj1' rather than '001' in orientation wheel
             
@@ -90,18 +91,31 @@ try
                 EEG = pop_rmbase(EEG, exp.epochbaseline);
   
                 %% Get behavior data and add to EEG structure
-                [out_soa,responded,out_angle] = getBEHdata_micb(part_name);
+                [out_soa,responded,out_angle,accuracy,direction,incorrect_gabor,out_RT,turn_trials,eventtrack] =...
+                    getBEHdata_micb(part_name);
+            
                 % add behavioral data to epoch structure
                 EEG.beh.out_soa = out_soa;
                 EEG.beh.responded = responded;
                 EEG.beh.out_angle = out_angle;
-                clear out_soa responded out_angle
+                EEG.beh.accuracy = accuracy;
+                EEG.beh.direction = direction;
+                EEG.beh.incor_gabor = incorrect_gabor;
+                EEG.beh.out_RT = out_RT;
+                EEG.beh.turn_trials = turn_trials;
+                EEG.beh.eventtrack = eventtrack;
+                
+                clear out_soa responded out_angle accuracy direction incorrect_gabor...
+                    out_RT turn_trials eventtrack
                 
                 
                 %% Reject practice trials from data
-                % only specific to subject 8 % only when using these specific settings
                 rej_practice = zeros(1,length(EEG.epoch));
-                rej_practice(1,1:20) = 1; %mark the first 20 trials for removal
+                if strcmpi(part_name,'006') %1 less practice trial recorded
+                    rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
+                else
+                    rej_practice(1,1:22) = 1; %mark the first 22 trials for removal
+                end
                 EEG = pop_rejepoch(EEG, rej_practice, 0);
                 clear rej_practice
                 
@@ -173,7 +187,7 @@ try
                     EEG = pop_selectevent( tempEEG, 'type', exp.events{i_set,i_event}, 'deleteevents','on','deleteepochs','on','invertepochs','off');
                     EEG = pop_editset(EEG, 'setname', [part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set}] );
                     EEG = pop_editset(EEG, 'condition', exp.setname{i_set} );
-                    EEG = pop_saveset( EEG, 'filename',[part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '.set'],'filepath',[exp.pathname '\' exp.setname{i_set} '\Segments\']);
+                    EEG = pop_saveset( EEG, 'filename',[part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '.set'],'filepath',[exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\Segments\']);
                 end
 % ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::                 
             end %create epoch loop end
@@ -181,8 +195,8 @@ try
             %% Time-Frequency Data
             if strcmp('on',exp.tf) == 1 || strcmp('on',exp.singletrials) == 1
                 
-                if ~exist([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\'])
-                    mkdir([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\']);
+                if ~exist([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\'])
+                    mkdir([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\']);
                 end
 
                 
@@ -190,7 +204,7 @@ try
                     
                     if strcmp('on',exp.epoch) == 0 %loading previous epochs if not created this session
                         filename = [part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set}];
-                        EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.setname{i_set} '\Segments\']);
+                        EEG = pop_loadset('filename',[filename '.set'],'filepath',[exp.pathname  '\' exp.suffix{1} '\' exp.setname{i_set} '\Segments\']);
                     end
                     
                     if isempty(exp.tfelecs) %if TF electrodes not specified, same as exp.brainelecs
@@ -211,9 +225,9 @@ try
 
                     if strcmp('on',exp.tf) == 1 %if TF was done already, do not save
                         if exp.cycles(1) > 0 %for wavelet
-                            save([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\Wav_' part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '.mat'],'ersp','itc','times','freqs','powbase','exp')
+                            save([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\Wav_' part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '.mat'],'ersp','itc','times','freqs','powbase','exp')
                         else %for FFT
-                            save([exp.pathname '\' exp.setname{i_set} '\TimeFrequency\TF_' part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '.mat'],'ersp','itc','times','freqs','powbase','exp')
+                            save([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\TimeFrequency\TF_' part_name '_' exp.event_names{i_set,i_event} '_' exp.setname{i_set} '.mat'],'ersp','itc','times','freqs','powbase','exp')
                         end
                     end
                         
@@ -222,12 +236,12 @@ try
                     if strcmp('on',exp.singletrials) == 1
                         
                         % Create folder for single trial data
-                        if ~exist([exp.pathname '\' exp.setname{i_set} '\SingleTrials\' part_name '\'],'dir')
-                            mkdir([exp.pathname '\' exp.setname{i_set} '\SingleTrials\' part_name '\']);
+                        if ~exist([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\SingleTrials\' part_name '\'],'dir')
+                            mkdir([exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\SingleTrials\' part_name '\']);
                         end
                         
                         % File path name
-                        Filepath_Trials = [exp.pathname '\' exp.setname{i_set} '\SingleTrials\' part_name '\'];
+                        Filepath_Trials = [exp.pathname '\' exp.suffix{1} '\' exp.setname{i_set} '\SingleTrials\' part_name '\'];
                         
                         % Save single trial data from the selected electrodes
                         for zzz = 1:length(exp.singletrialselecs)

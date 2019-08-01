@@ -3,7 +3,7 @@
 
 % ==== TRIGGERS ====
 %
-% Start eye tracker: 90
+% Start eye tracker: 90 (199 starting subj 015)
 % End eye tracker: 99
 % Break: 2
 % 
@@ -13,6 +13,7 @@
 %   Movement & Gabor: soas+21 (14,16,18,20,21,22,24,26,28)
 %   Movement:         soas+30 (23,25,27,29,30,31,33,35,37)
 %   Gabor:            soas+41 (34,36,38,40,41,42,44,46,48)
+% Trial end: soas+90 (83,85,87,89,90,91,93,95,97)
 % Response screen: soas+50 (43,45,47,49,50,51,53,55,57)  
 % Response:
 %   Correct: soas+61 (54,56,58,60,61,62,64,66,68)
@@ -25,6 +26,7 @@
 %   Movement & Gabor: soas+121 (114,116,118,120,121,122,124,126,128)
 %   Movement:         soas+130 (123,125,127,129,130,131,133,135,137)
 %   Gabor:            soas+141 (134,136,138,140,141,142,144,146,148)
+% Trial end: soas+190 (183,185,187,189,190,191,193,195,197)
 % Response screen: soas+150 (143,145,147,149,150,151,153,155,157)  
 % Response:
 %   Correct: soas+161 (154,156,158,160,161,162,164,166,168)
@@ -32,7 +34,6 @@
 %   Timed out: soas+181 (174,176,178,180,181,182,184,186,188)
 % 
 % /////////////////////////////////////////////////////////////////////////
-
 %clear and close everything
 ccc
 
@@ -41,9 +42,26 @@ ccc
 %        >>>>> Description of the saved dataset settings <<<<<
 % 
 % -> byFix_v1: winsize is 256, no ERSP baseline, epoched to targets; 
-%    Epoch limit [-0.5 3.5]. ERP baseline [-200 0]. Filter on [0.1 50]. 
+%    Epoch limit [-1 2.5]. ERP baseline [-200 0]. Filter on [0.1 50]. 
 %    Cycles [2 0.8] (2 cycles at lowest freq & 10 at highest). Freq range [2 50]. 
 %    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
+%    Window size is 1115 samples (1115 ms) wide.
+% 
+% -> byFix_v2: winsize is 256, no ERSP baseline, epoched to targets; 
+%    Epoch limit [-1 2.5]. ERP baseline [-200 0]. Filter on [0.1 50]. 
+%    Cycles [2 0.8] (2 cycles at lowest freq & 10 at highest). Freq range [2 50]. 
+%    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
+%    Window size is 1115 samples (1115 ms) wide. **Combining straight &
+%    turn trials during processing**
+% 
+% 
+% 
+% 
+% -> byGabor_v1: winsize is 256, no ERSP baseline, epoched to targets; 
+%    Epoch limit [-2.5 2.2]. ERP baseline [-1808 -1608]. Filter on [0.1 50]. 
+%    Cycles [2 0.8] (2 cycles at lowest freq & 10 at highest). Freq range [2 50]. 
+%    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
+%    Window size is 1115 samples (1115 ms) wide.
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -52,7 +70,7 @@ exp.name = 'micb';
 exp.conds = ''; %conds is usually used for comparing the same type of trials
                 %under different conditions (e.g., stimulation vs sham)
 exp.pathname = 'M:\Data\micb_eyetrack\EEG\'; %path of EEG data
-% exp.settingname = 'byFix_v1'; % name each epoched set
+exp.settingname = 'byFix_v2'; % name each epoched set
 
 % note: the meaning of set here is to identify the type of analysis done.
 %       set is usually used to identify different trial types (e.g., standards
@@ -60,14 +78,21 @@ exp.pathname = 'M:\Data\micb_eyetrack\EEG\'; %path of EEG data
 
 % List of participants' ids
 % **subjects 001-004 do not have triggers for direction and gabor change
-exp.participants = {'002','003','004','005','006','007','008','009','010','011','012'};
+% ***subjects 015 & later have trial length equal across trial type***
+% exp.participants = {'002','003','004','005','006','007','008','009','010','011','012','013','014','015',...
+%     '016','017','018','019','020','021','022','023','024','025','026','027'};
+% exp.participants = {'015','016','017','018','019','020','021','022','023','024','025','026','027','028'};
+exp.participants = {'005','006','007','008','009','010','011','012','013','014','015',...
+    '016','017','018','019','020','021','022','023','024','025','026','027'};
 
 %% Blink Correction
 % the Blink Correction wants dissimilar events (different erps) seperated by 
 % commas and similar events (similar erps) seperated with spaces. See 'help gratton_emcp'
 % exp.selection_cards = {'11 21','13 23'};
 %%%indicates where you want to center your data (where time zero is) 
-exp.selection_cards = {'3 5 7 9 10 11 13 15 17','103 105 107 109 110 111 113 115 117'}; %must be list == length(exp.setname)  
+% exp.selection_cards = {'3 5 7 9 10 11 13 15 17','103 105 107 109 110 111 113 115 117'}; %must be list == length(exp.setname)  
+exp.selection_cards = {'10 110'}; %must be list == length(exp.setname)  
+
 
 %% Artifact rejection. 
 % Choose the threshold to reject trials. More lenient threshold followed by an (optional) stricter threshold 
@@ -80,11 +105,13 @@ exp.postocularthresh = [-500 500]; %Second happens after. Leave blank [] to skip
 %%%for each condition (lag 1-4 in this case), numbers correspond to
 %%%triggers that will be kept for each condition. All other triggers will
 %%%be removed
-exp.events = {[3 5 7 9 10 11 13 15 17];...
-              [103 105 107 109 110 111 113 115 117]};%can be list or matrix (sets x events)  
+% exp.events = {[3 5 7 9 10 11 13 15 17];...
+%               [103 105 107 109 110 111 113 115 117]};%can be list or matrix (sets x events)
+% exp.events = {[31,32,33,34]};%can be list or matrix (sets x events) 
+exp.events = {[10 110]};%can be list or matrix (sets x events) 
 exp.event_names = {'Fix'}; %must be list or matrix (sets x events)
-exp.setname = {'T';'S'}; %name the rows
-exp.suffix = {'byFix'};
+exp.setname = {'T_S'}; %name the rows
+exp.suffix = {exp.settingname};
 
 % Each item in the exp.events matrix will become a seperate dataset, including only those epochs referenced by the events in that item. 
 %e.g. 3 rows x 4 columns == 12 datasets/participant
@@ -141,11 +168,12 @@ exp.freqrange = [exp.cycles(1):50]; %when doing wavelet
 %% Epoching the data
 exp.epoch = 'on'; %on to epoch data; off to load previous data
 %%%indicates where you want to center your data (where time zero is)
-exp.epochs = {'3','5','7','9','10','11','13','15','17',...
-    '103','105','107','109','110','111','113','115','117'}; %must be list == length(exp.setname)
+% exp.epochs = {'3','5','7','9','10','11','13','15','17',...
+%     '103','105','107','109','110','111','113','115','117'}; %must be list == length(exp.setname)
+exp.epochs = {'10','110'}; %must be list == length(exp.setname)
 exp.epochs_name = {};
-exp.epochslims = [-2.5 3.5]; %in seconds; epoched trigger is 0 e.g. [-1 2]
-exp.epochbaseline = [-2067 -1867]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
+exp.epochslims = [-1 2.5]; %in seconds; epoched trigger is 0 e.g. [-1 2]
+exp.epochbaseline = [-200 0]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
 
 
 %% Time-Frequency settings

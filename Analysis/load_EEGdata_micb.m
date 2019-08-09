@@ -8,8 +8,8 @@ ccc %clear variables & close windows
 load('byFix_v2_Settings.mat');  %#ok<*LOAD>
 
 % -------------------------------------------------------------------------
-anal.tf = 'on'; % if loading TF data
-anal.singletrials = 'off'; % if loading single trial data
+anal.tf = 'off'; % if loading TF data
+anal.singletrials = 'on'; % if loading single trial data
 anal.segments = 'on'; % if loading epochs
 anal.tfelecs = exp.brainelecs; %#ok<*NODEF> %electrodes
 anal.singletrialselecs = exp.singletrialselecs; %single trial electrodes

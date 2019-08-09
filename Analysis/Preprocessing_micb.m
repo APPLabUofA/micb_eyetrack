@@ -47,8 +47,7 @@ try
         nevents = length(exp.events(i_set,:));
         
         %% Load data and channel locations
-%         for i_part = 1:nparts
-        for i_part = 2
+        for i_part = 23:nparts
             
             part_name = exp.participants{i_part}; %this is cuz subject ids are in the form 'subj1' rather than '001' in orientation wheel
             
@@ -160,13 +159,193 @@ try
 % @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  
 % ````````````````````````````````````````````````````````````````````````````````````````````  
 % @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
-                %% Additional rejection of trials for subject 7 due to technical issues (reviewed visually) 
-%                 if (strcmpi(part_name,'subj3') && strcmpi(exp.settings,'filt_byTargets_v3'))%only when using this specific settings 
-%                     EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
-%                     EEG.reject.rejthresh(16)=1;
-%                     rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
-%                     EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
-%                 end
+                %% Additional rejection of trials (reviewed visually) 
+                if (strcmpi(part_name,'016') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(83)=1;
+                    EEG.reject.rejthresh(144)=1;
+                    EEG.reject.rejthresh(174:175)=1;
+                    EEG.reject.rejthresh(199)=1;
+                    EEG.reject.rejthresh(221)=1;
+                    EEG.reject.rejthresh(283)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                    
+                elseif (strcmpi(part_name,'017') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(112)=1;
+                    EEG.reject.rejthresh(116)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                    
+                elseif (strcmpi(part_name,'018') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(187)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);  
+                    
+                elseif (strcmpi(part_name,'019') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(41)=1;
+                    EEG.reject.rejthresh(117:118)=1;
+                    EEG.reject.rejthresh(135:136)=1;
+                    EEG.reject.rejthresh(155)=1;
+                    EEG.reject.rejthresh(200:201)=1;
+                    EEG.reject.rejthresh(206:207)=1;
+                    EEG.reject.rejthresh(241)=1;
+                    EEG.reject.rejthresh(256)=1;
+                    EEG.reject.rejthresh(262)=1;
+                    EEG.reject.rejthresh(270)=1;
+                    EEG.reject.rejthresh(279:280)=1;
+                    EEG.reject.rejthresh(283)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                    
+                elseif (strcmpi(part_name,'020') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(49)=1;
+                    EEG.reject.rejthresh(141)=1;
+                    EEG.reject.rejthresh(143)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);    
+                    
+                elseif (strcmpi(part_name,'021') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(254)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                    
+                elseif (strcmpi(part_name,'022') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(127)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                
+                elseif (strcmpi(part_name,'023') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(47:48)=1;
+                    EEG.reject.rejthresh(52)=1;
+                    EEG.reject.rejthresh(85)=1;
+                    EEG.reject.rejthresh(131:132)=1;
+                    EEG.reject.rejthresh(143)=1;
+                    EEG.reject.rejthresh(151)=1;
+                    EEG.reject.rejthresh(172)=1;
+                    EEG.reject.rejthresh(187)=1;
+                    EEG.reject.rejthresh(234)=1;
+                    EEG.reject.rejthresh(245:246)=1;
+                    EEG.reject.rejthresh(266)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                    
+                elseif (strcmpi(part_name,'024') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(114)=1;
+                    EEG.reject.rejthresh(231)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                
+                elseif (strcmpi(part_name,'026') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(69)=1;
+                    EEG.reject.rejthresh(102)=1;
+                    EEG.reject.rejthresh(242)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);    
+                
+                elseif (strcmpi(part_name,'027') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(54:55)=1;
+                    EEG.reject.rejthresh(138:139)=1;
+                    EEG.reject.rejthresh(242)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);    
+                    
+                elseif (strcmpi(part_name,'028') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(30)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                
+                elseif (strcmpi(part_name,'032') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(5)=1;
+                    EEG.reject.rejthresh(33)=1;
+                    EEG.reject.rejthresh(41)=1;
+                    EEG.reject.rejthresh(47)=1;
+                    EEG.reject.rejthresh(59)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                
+                elseif (strcmpi(part_name,'033') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(13)=1;
+                    EEG.reject.rejthresh(25)=1;
+                    EEG.reject.rejthresh(33)=1;
+                    EEG.reject.rejthresh(70)=1;
+                    EEG.reject.rejthresh(85)=1;
+                    EEG.reject.rejthresh(137)=1;
+                    EEG.reject.rejthresh(165)=1;
+                    EEG.reject.rejthresh(186)=1;
+                    EEG.reject.rejthresh(238)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                
+                elseif (strcmpi(part_name,'034') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(30)=1;
+                    EEG.reject.rejthresh(37)=1;
+                    EEG.reject.rejthresh(77)=1;
+                    EEG.reject.rejthresh(97)=1;
+                    EEG.reject.rejthresh(103)=1;
+                    EEG.reject.rejthresh(110)=1;
+                    EEG.reject.rejthresh(114:115)=1;
+                    EEG.reject.rejthresh(117:118)=1;
+                    EEG.reject.rejthresh(143)=1;
+                    EEG.reject.rejthresh(160)=1;
+                    EEG.reject.rejthresh(178:179)=1;
+                    EEG.reject.rejthresh(189:190)=1;
+                    EEG.reject.rejthresh(233)=1;
+                    EEG.reject.rejthresh(241)=1;
+                    EEG.reject.rejthresh(263)=1;
+                    EEG.reject.rejthresh(275)=1;
+                    EEG.reject.rejthresh(277:278)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                
+                elseif (strcmpi(part_name,'035') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(1)=1;
+                    EEG.reject.rejthresh(95)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                
+                elseif (strcmpi(part_name,'036') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(14)=1;
+                    EEG.reject.rejthresh(46)=1;
+                    EEG.reject.rejthresh(76)=1;
+                    EEG.reject.rejthresh(87)=1;
+                    EEG.reject.rejthresh(187)=1;
+                    EEG.reject.rejthresh(285)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                
+                elseif (strcmpi(part_name,'037') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(50)=1;
+                    EEG.reject.rejthresh(57)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+                
+                elseif (strcmpi(part_name,'038') && strcmpi(exp.settingname,'byFix_v3'))%only when using this specific settings 
+                    EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+                    EEG.reject.rejthresh(65)=1;
+                    EEG.reject.rejthresh(270)=1;
+                    EEG.reject.rejthresh(281)=1;
+                    rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+                    EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);  
+                
+                end
                 
 % ````````````````````````````````````````````````````````````````````````````````````````````
 

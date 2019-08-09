@@ -54,6 +54,13 @@ ccc
 %    Window size is 1115 samples (1115 ms) wide. **Combining straight &
 %    turn trials during processing**
 % 
+% -> byFix_v2: winsize is 256, no ERSP baseline, epoched to targets; 
+%    Epoch limit [-1 2.5]. ERP baseline [800 1092]. Filter on [0.1 50]. 
+%    Cycles [2 0.8] (2 cycles at lowest freq & 10 at highest). Freq range [2 50]. 
+%    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
+%    Window size is 1115 samples (1115 ms) wide. *Combining straight &
+%    turn trials during processing*
+% 
 % 
 % 
 % 
@@ -70,20 +77,24 @@ exp.name = 'micb';
 exp.conds = ''; %conds is usually used for comparing the same type of trials
                 %under different conditions (e.g., stimulation vs sham)
 exp.pathname = 'M:\Data\micb_eyetrack\EEG\'; %path of EEG data
-exp.settingname = 'byFix_v2'; % name each epoched set
+exp.settingname = 'byFix_v3'; % name each epoched set
 
 % note: the meaning of set here is to identify the type of analysis done.
 %       set is usually used to identify different trial types (e.g., standards
 %       vs targets) within the same experimental condition.
 
 % List of participants' ids
-% **subjects 001-004 do not have triggers for direction and gabor change
-% ***subjects 015 & later have trial length equal across trial type***
-% exp.participants = {'002','003','004','005','006','007','008','009','010','011','012','013','014','015',...
-%     '016','017','018','019','020','021','022','023','024','025','026','027'};
-% exp.participants = {'015','016','017','018','019','020','021','022','023','024','025','026','027','028'};
-exp.participants = {'005','006','007','008','009','010','011','012','013','014','015',...
-    '016','017','018','019','020','021','022','023','024','025','026','027'};
+%   **subjects 001-004 do not have triggers for direction and gabor change
+%   **subjects 005-011 have extra triggers 
+%   **subjects 012-014 do not have equal trial lengths
+%   **subjects 015 & later have trial length equal across trial type**
+%    *do NOT use subject 029 data*
+% exp.participants = {'033','034'};
+exp.participants = {'015','016','017','018','019','020','021','022','023','024','025','026','027','028',...
+    '030','031','032','033','034','035','036','037','038','039'};
+% exp.participants = {'005','006','007','008','009','010','011','012','013','014','015',...
+%     '016','017','018','019','020','021','022','023','024','025','026','027','028',...
+%     '030','031','032','033','034'};
 
 %% Blink Correction
 % the Blink Correction wants dissimilar events (different erps) seperated by 
@@ -108,7 +119,7 @@ exp.postocularthresh = [-500 500]; %Second happens after. Leave blank [] to skip
 % exp.events = {[3 5 7 9 10 11 13 15 17];...
 %               [103 105 107 109 110 111 113 115 117]};%can be list or matrix (sets x events)
 % exp.events = {[31,32,33,34]};%can be list or matrix (sets x events) 
-exp.events = {[10 110]};%can be list or matrix (sets x events) 
+exp.events = {[10,110]};%can be list or matrix (sets x events) 
 exp.event_names = {'Fix'}; %must be list or matrix (sets x events)
 exp.setname = {'T_S'}; %name the rows
 exp.suffix = {exp.settingname};
@@ -173,7 +184,7 @@ exp.epoch = 'on'; %on to epoch data; off to load previous data
 exp.epochs = {'10','110'}; %must be list == length(exp.setname)
 exp.epochs_name = {};
 exp.epochslims = [-1 2.5]; %in seconds; epoched trigger is 0 e.g. [-1 2]
-exp.epochbaseline = [-200 0]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
+exp.epochbaseline = [800 1092]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
 
 
 %% Time-Frequency settings

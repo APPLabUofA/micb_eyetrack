@@ -54,13 +54,19 @@ ccc
 %    Window size is 1115 samples (1115 ms) wide. **Combining straight &
 %    turn trials during processing**
 % 
-% -> byFix_v2: winsize is 256, no ERSP baseline, epoched to targets; 
+% -> byFix_v3: winsize is 256, no ERSP baseline, epoched to targets; 
 %    Epoch limit [-1 2.5]. ERP baseline [800 1092]. Filter on [0.1 50]. 
 %    Cycles [2 0.8] (2 cycles at lowest freq & 10 at highest). Freq range [2 50]. 
 %    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
 %    Window size is 1115 samples (1115 ms) wide. *Combining straight &
 %    turn trials during processing*
 % 
+% % -> byFix_v4: winsize is 256, no ERSP baseline, epoched to targets; 
+%    Epoch limit [-1 2.5]. ERP baseline [700 1092]. Filter on [0.1 50]. 
+%    Cycles [2 0.8] (2 cycles at lowest freq & 10 at highest). Freq range [2 50]. 
+%    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
+%    Window size is 1115 samples (1115 ms) wide. 
+%    *Separate turn events into correct and incorrect*
 % 
 % 
 % 
@@ -77,7 +83,7 @@ exp.name = 'micb';
 exp.conds = ''; %conds is usually used for comparing the same type of trials
                 %under different conditions (e.g., stimulation vs sham)
 exp.pathname = 'M:\Data\micb_eyetrack\EEG\'; %path of EEG data
-exp.settingname = 'byFix_v3'; % name each epoched set
+exp.settingname = 'byFix_v4'; % name each epoched set
 
 % note: the meaning of set here is to identify the type of analysis done.
 %       set is usually used to identify different trial types (e.g., standards
@@ -88,10 +94,13 @@ exp.settingname = 'byFix_v3'; % name each epoched set
 %   **subjects 005-011 have extra triggers 
 %   **subjects 012-014 do not have equal trial lengths
 %   **subjects 015 & later have trial length equal across trial type**
-%    *do NOT use subject 029 data*
+%    *do NOT use subject 029 data (age does not meet criteria)*
+%    *exclude subject 032 due to large eyeblink artifacts that were not removed by gratton*
+%    *exclude subject 039 due to excessive voltage shifts*
 % exp.participants = {'033','034'};
 exp.participants = {'015','016','017','018','019','020','021','022','023','024','025','026','027','028',...
-    '030','031','032','033','034','035','036','037','038','039'};
+    '030','031','032','033','034','035','036','037','038','040','041','042','043','044','045','046','047',...
+    '048','049','050'};
 % exp.participants = {'005','006','007','008','009','010','011','012','013','014','015',...
 %     '016','017','018','019','020','021','022','023','024','025','026','027','028',...
 %     '030','031','032','033','034'};
@@ -101,8 +110,8 @@ exp.participants = {'015','016','017','018','019','020','021','022','023','024',
 % commas and similar events (similar erps) seperated with spaces. See 'help gratton_emcp'
 % exp.selection_cards = {'11 21','13 23'};
 %%%indicates where you want to center your data (where time zero is) 
-% exp.selection_cards = {'3 5 7 9 10 11 13 15 17','103 105 107 109 110 111 113 115 117'}; %must be list == length(exp.setname)  
-exp.selection_cards = {'10 110'}; %must be list == length(exp.setname)  
+% exp.selection_cards = {'3 5 7 9 10 11 13 15 17','103 105 107 109 110 111 113 115 117'}; %must be list == length(exp.setname)    
+exp.selection_cards = {'1061','1070','110'};  %must be list == length(exp.setname)
 
 
 %% Artifact rejection. 
@@ -119,9 +128,9 @@ exp.postocularthresh = [-500 500]; %Second happens after. Leave blank [] to skip
 % exp.events = {[3 5 7 9 10 11 13 15 17];...
 %               [103 105 107 109 110 111 113 115 117]};%can be list or matrix (sets x events)
 % exp.events = {[31,32,33,34]};%can be list or matrix (sets x events) 
-exp.events = {[10,110]};%can be list or matrix (sets x events) 
-exp.event_names = {'Fix'}; %must be list or matrix (sets x events)
-exp.setname = {'T_S'}; %name the rows
+exp.events = {1061;1070;110};%can be list or matrix (sets x events) 
+exp.event_names = {'Fix';'Fix';'Fix'}; %must be list or matrix (sets x events)
+exp.setname = {'T_C';'T_I';'S'}; %name the rows
 exp.suffix = {exp.settingname};
 
 % Each item in the exp.events matrix will become a seperate dataset, including only those epochs referenced by the events in that item. 
@@ -177,14 +186,14 @@ exp.padratio = 4;
 exp.freqrange = [exp.cycles(1):50]; %when doing wavelet
 
 %% Epoching the data
-exp.epoch = 'on'; %on to epoch data; off to load previous data
+exp.epoch = 'off'; %on to epoch data; off to load previous data
 %%%indicates where you want to center your data (where time zero is)
 % exp.epochs = {'3','5','7','9','10','11','13','15','17',...
 %     '103','105','107','109','110','111','113','115','117'}; %must be list == length(exp.setname)
-exp.epochs = {'10','110'}; %must be list == length(exp.setname)
+exp.epochs = {'1061','1070','110'}; %must be list == length(exp.setname)
 exp.epochs_name = {};
 exp.epochslims = [-1 2.5]; %in seconds; epoched trigger is 0 e.g. [-1 2]
-exp.epochbaseline = [800 1092]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
+exp.epochbaseline = [700 1092]; %remove the baseline for each epoched set, in ms. e.g. [-200 0] 
 
 
 %% Time-Frequency settings

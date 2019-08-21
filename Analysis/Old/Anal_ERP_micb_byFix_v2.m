@@ -77,8 +77,7 @@ erp_out_byerr(:,:,5) = squeeze(mean(erp_out_T_inc(:,:,:),1)); %turn trials incor
 
 
 % :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-% Plot by small and large error trials & difference ERP
-% for ii = 1:8
+% Plot ERPs
 for ii = 1:length(elect_erp)    
     i_elect = elect_erp(ii); %for doing only a selection of electrodes
 %     i_elect = ii; %selection done when making ERPs
@@ -114,7 +113,7 @@ for ii = 1:length(elect_erp)
     xlabel('Time (ms)'); ylabel('Voltage (uV)');
     
     title([el_erp_names{ii} ': ERPs by Trial Type']); 
-    legend({'Flexion','Straight'},'Location','best');
+    legend({'Flexion','Control'},'Location','best');
 %     legend({'Flexion','Straight','Diff: F-S'},'Location','best');
     
     clear ymin ymax
@@ -125,13 +124,9 @@ clear ii xmax xmin
 % :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 % Plot ERPs with error bars
 for ii = 1:length(elect_erp) 
-% for ii = 1:5 
     i_elect = elect_erp(ii); %for doing only a selection of electrodes
 %     i_elect = ii; %selection done when making ERPs
 
-    % get axes limits
-    ymin = -10; ymax = 11;
-    xmin = -400; xmax = 2200;
     
     figure('Color',[1 1 1],'Position',[680 678 789 420]); 
 %     figure;
@@ -139,6 +134,19 @@ for ii = 1:length(elect_erp)
             ALLEEG(1).times,erp_out_byerr(i_elect,:,5),squeeze(std(erp_out_T_inc(:,i_elect,:),[],1))./sqrt(length(exp.participants)),'g--',...
             ALLEEG(1).times,erp_out_byerr(i_elect,:,2),squeeze(std(erp_out_S(:,i_elect,:),[],1))./sqrt(length(exp.participants)),'m');
     hold on
+    
+    % get y-axes limits
+    if elect_erp(ii) == 19 %VEOG bigger scale
+        ymin = -10; ymax = 80;
+        yticks(ymin:10:ymax);
+    else
+        ymin = -10; ymax = 15;
+        yticks(ymin:5:ymax);
+    end
+    
+    % get x-axes limits
+    xmin = -400; xmax = 2200;
+    xticks(xmin:200:xmax);
     
     line([xmin xmax],[0 0],'color','k','LineWidth',1.5) %horizontal line
     line([0 0],[ymin ymax],'color','k','LineWidth',1.5) %vertical line
@@ -151,17 +159,17 @@ for ii = 1:length(elect_erp)
     xlim([xmin xmax]); ylim([ymin ymax])
     %axes labels
     xlabel('Time (ms)'); ylabel('Voltage (uV)'); 
-    xticks(xmin:200:xmax); yticks(ymin:2:10) 
     
     title([el_erp_names{ii} ': ERPs by Trial Type']);    
-    legend({'Flexion-Correct','Flexion-Incorrect','Straight'},'Location','best');
+    legend({'Flexion-Correct','Flexion-Incorrect','Control'},'Location','best');
     
     clear ymin ymax
 end
 clear ii xmax xmin    
 
 
-clear erp_out_byerr
+
+% clear erp_out_byerr
 
 
 % /////////////////////////////////////////////////////////////////////////
@@ -258,22 +266,21 @@ erp_out_diff(:,:,3) = squeeze(mean((erp_out_T_inc(:,:,:)-erp_out_S(:,:,:)),1)); 
 
 
 % Set the range of time to consider
-% tWin{1} = [50 150];
-% tWin{2} = [150 250];
-% tWin{3} = [250 350];
-% tWin{4} = [350 450];
-% tWin{5} = [450 550];
-
 tWin{1} = [1090 1200];
-tWin{2} = [1200 1300];
-tWin{3} = [1300 1400];
-tWin{4} = [1400 1500];
-tWin{5} = [1500 1600];
-tWin{6} = [1600 1700];
+tWin{2} = [1200 1400];
+tWin{3} = [1400 1600];
+tWin{4} = [1600 2000];
+
+% tWin{1} = [1090 1200];
+% tWin{2} = [1200 1300];
+% tWin{3} = [1300 1400];
+% tWin{4} = [1400 1500];
+% tWin{5} = [1500 1600];
+% tWin{6} = [1600 1700];
 
 % tWin{1} = [300 350];
 
-CLims1 = [-4 4]; %range in microvolts
+CLims1 = [-5 5]; %range in microvolts
 nconds = 3; %number of plots
 conds = {'Flexion Correct-Incorrect';'Flexion Correct-Straight';'Flexion Incorrect-Straight'}; %labels for plots
 for tw_i = 1:length(tWin) %loop through several time windows 

@@ -1,5 +1,5 @@
 
-
+% Code based on settings saved as byFix_v4_Settings.mat
 
 % /////////////////////////////////////////////////////////////////////////
 % /////////////////////////////////////////////////////////////////////////
@@ -30,30 +30,52 @@ el_erp_names = {'M2';'Oz';'Pz';'Cz';'FCz';'Fz';'O1';'O2';'P3';'P4';'P7';'P8';...
 % /////////////////////////////////////////////////////////////////////////
 
 % Create ERPs by trial type
-erp_out_T = NaN(length(exp.participants),length(elect_erp),length(EEG.times)); %pre-allocate
-erp_out_S = NaN(length(exp.participants),length(elect_erp),length(EEG.times)); %pre-allocate
+erp_out_S = NaN(length(exp.participants),length(elect_erp),length(ALLEEG(1).times)); %pre-allocate
 erp_out_T_cor = NaN(length(exp.participants),length(elect_erp),length(ALLEEG(1).times)); %pre-allocate
 erp_out_T_inc = NaN(length(exp.participants),length(elect_erp),length(ALLEEG(1).times)); %pre-allocate
+outT_c_RT = cell(length(exp.participants),1); %pre-allocate
+outT_i_RT = cell(length(exp.participants),1); %pre-allocate
+outS_RT = cell(length(exp.participants),1); %pre-allocate
+outS_accuracy = cell(length(exp.participants),1); %pre-allocate
+jj = 0; %counter for turn correct trials
+kk = 0; %counter for turn incorrect trials
+jk = 0; %counter for straight trials
 for i_part = 1:length(ALLEEG) 
         
-    for ii = 1:length(elect_erp) %loop through electrodes
-        i_elect = elect_erp(ii); %for doing only a selection of electrodes
-        
-        % Turn trial ERPs
-        erp_out_T(i_part,ii,:) = squeeze(mean(ALLEEG(i_part).data(i_elect,:,turn_trials{i_part}),3));
-        erp_out_T_cor(i_part,ii,:) = squeeze(mean(ALLEEG(i_part).data(i_elect,:,...
-            (turn_trials{i_part} & accuracy{i_part}==1)),3));
-        erp_out_T_inc(i_part,ii,:) = squeeze(mean(ALLEEG(i_part).data(i_elect,:,...
-            (turn_trials{i_part} & accuracy{i_part}==0)),3));
-        
-        % Straight trial ERPs
-        erp_out_S(i_part,ii,:) = squeeze(mean(ALLEEG(i_part).data(i_elect,:,turn_trials{i_part}==0),3));
-        
-    end
-    clear ii i_elect
+        if strcmpi(ALLEEG(i_part).condition,'T_C') %Get turn correct trials
+            jj = jj + 1;
+            for ii = 1:length(elect_erp) %loop through electrodes
+                i_elect = elect_erp(ii); %for doing only a selection of electrodes
+                erp_out_T_cor(jj,ii,:) = squeeze(mean(ALLEEG(i_part).data(i_elect,:,:),3));
+            end
+            clear ii i_elect
+            %reaction time on correct turn trials
+            outT_c_RT{jj} = out_RT{jj}(turn_trials{jj} & accuracy{jj} == 1);
             
+        elseif strcmpi(ALLEEG(i_part).condition,'T_I') %Get turn incorrect trials
+            kk = kk + 1;
+            for ii = 1:length(elect_erp) %loop through electrodes
+                i_elect = elect_erp(ii); %for doing only a selection of electrodes
+                erp_out_T_inc(kk,ii,:) = squeeze(mean(ALLEEG(i_part).data(i_elect,:,:),3));
+            end
+            clear ii i_elect
+            %reaction time on incorrect turn trials
+            outT_i_RT{kk} = out_RT{kk}(turn_trials{kk} & accuracy{kk} == 0);
+        
+        elseif strcmpi(ALLEEG(i_part).condition,'S') %Get straight trials
+            jk = jk + 1;
+            for ii = 1:length(elect_erp) %loop through electrodes
+                i_elect = elect_erp(ii); %for doing only a selection of electrodes
+                erp_out_S(jk,ii,:) = squeeze(mean(ALLEEG(i_part).data(i_elect,:,:),3));
+            end
+            clear ii i_elect
+            %reaction time on straight trials
+            outS_RT{jk} = out_RT{jk}(turn_trials{jk}==0);
+            %accuracy on straight trials
+            outS_accuracy{jk} = sum(accuracy{jk}(turn_trials{jk} == 0))./length(accuracy{jk}(turn_trials{jk} == 0));
+        end
 end
-clear i_part
+clear i_part jj kk jk
 
 
 % /////////////////////////////////////////////////////////////////////////
@@ -68,11 +90,9 @@ clear i_part
 
 % ------------------------------------------------------------------------- 
 % average across subjects
-erp_out_byerr(:,:,1) = squeeze(mean(erp_out_T(:,:,:),1)); %turn trials
-erp_out_byerr(:,:,2) = squeeze(mean(erp_out_S(:,:,:),1)); %straight trials
-erp_out_byerr(:,:,3) = squeeze(mean((erp_out_T(:,:,:)-erp_out_S(:,:,:)),1)); %difference
-erp_out_byerr(:,:,4) = squeeze(mean(erp_out_T_cor(:,:,:),1)); %turn trials correct
-erp_out_byerr(:,:,5) = squeeze(mean(erp_out_T_inc(:,:,:),1)); %turn trials incorrect
+erp_out_byerr(:,:,1) = squeeze(mean(erp_out_S(:,:,:),1)); %turn trials
+erp_out_byerr(:,:,2) = squeeze(mean(erp_out_T_cor(:,:,:),1)); %turn trials correct
+erp_out_byerr(:,:,3) = squeeze(mean(erp_out_T_inc(:,:,:),1)); %turn trials incorrect
 % ------------------------------------------------------------------------- 
 
 
@@ -90,11 +110,11 @@ for ii = 1:length(elect_erp)
     xmin = -400; xmax = 2200;
     
     figure
-    %Turn trials
-    plot(EEG.times,erp_out_byerr(i_elect,:,1),'color',[0.14 0.93 0.9],'LineWidth',1.5)
+    %turn trials
+    plot(ALLEEG(1).times,erp_out_byerr(i_elect,:,1),'color',[0.14 0.93 0.9],'LineWidth',1.5)
     hold on
-    %Straight trials
-    plot(EEG.times,erp_out_byerr(i_elect,:,2),'-.m','LineWidth',1.5)
+    %straight trials
+    plot(ALLEEG(1).times,erp_out_byerr(i_elect,:,2),'-.m','LineWidth',1.5)
     hold on
     %difference
 %     plot(EEG.times,erp_out_byerr(i_elect,:,3),'color',[0 1 0.5],'LineWidth',1)
@@ -114,9 +134,9 @@ for ii = 1:length(elect_erp)
     xlabel('Time (ms)'); ylabel('Voltage (uV)');
     
     title([el_erp_names{ii} ': ERPs by Trial Type']); 
-    legend({'Flexion','Control'},'Location','best');
+    legend({'Flexion','Straight'},'Location','best');
 %     legend({'Flexion','Straight','Diff: F-S'},'Location','best');
-    
+
     clear ymin ymax
 end
 clear ii xmax xmin
@@ -124,21 +144,30 @@ clear ii xmax xmin
 
 % :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 % Plot ERPs with error bars
-for ii = 1:length(elect_erp) 
+for ii = 2:length(elect_erp) 
 % for ii = 1:5 
     i_elect = elect_erp(ii); %for doing only a selection of electrodes
 %     i_elect = ii; %selection done when making ERPs
-
-    % get axes limits
-    ymin = -10; ymax = 11;
-    xmin = -400; xmax = 2200;
     
-    figure('Color',[1 1 1],'Position',[680 678 789 420]); 
-%     figure;
-    boundedline(ALLEEG(1).times,erp_out_byerr(i_elect,:,4),squeeze(std(erp_out_T_cor(:,i_elect,:),[],1))./sqrt(length(exp.participants)),'b',...
-            ALLEEG(1).times,erp_out_byerr(i_elect,:,5),squeeze(std(erp_out_T_inc(:,i_elect,:),[],1))./sqrt(length(exp.participants)),'g--',...
-            ALLEEG(1).times,erp_out_byerr(i_elect,:,2),squeeze(std(erp_out_S(:,i_elect,:),[],1))./sqrt(length(exp.participants)),'m');
+    figure('Color',[1 1 1]);
+%     figure; 
+    boundedline(ALLEEG(1).times,erp_out_byerr(i_elect,:,2),squeeze(std(erp_out_T_cor(:,i_elect,:),[],1))./sqrt(length(exp.participants)),'b',...
+            ALLEEG(1).times,erp_out_byerr(i_elect,:,3),squeeze(std(erp_out_T_inc(:,i_elect,:),[],1))./sqrt(length(exp.participants)),'g--',...
+            ALLEEG(1).times,erp_out_byerr(i_elect,:,1),squeeze(std(erp_out_S(:,i_elect,:),[],1))./sqrt(length(exp.participants)),'m');
     hold on
+    
+     % get y-axes limits
+    if elect_erp(ii) == 19 %VEOG bigger scale
+        ymin = -10; ymax = 80;
+        yticks(ymin:10:ymax);
+    else
+        ymin = -10; ymax = 15;
+        yticks(ymin:5:ymax);
+    end
+    
+    % get x-axes limits
+    xmin = -400; xmax = 2200;
+    xticks(xmin:200:xmax);
     
     line([xmin xmax],[0 0],'color','k','LineWidth',1.5) %horizontal line
     line([0 0],[ymin ymax],'color','k','LineWidth',1.5) %vertical line
@@ -151,7 +180,6 @@ for ii = 1:length(elect_erp)
     xlim([xmin xmax]); ylim([ymin ymax])
     %axes labels
     xlabel('Time (ms)'); ylabel('Voltage (uV)'); 
-    xticks(xmin:200:xmax); yticks(ymin:2:10) 
     
     title([el_erp_names{ii} ': ERPs by Trial Type']);    
     legend({'Flexion-Correct','Flexion-Incorrect','Control'},'Location','best');
@@ -161,7 +189,13 @@ end
 clear ii xmax xmin    
 
 
+
+
+
+
 clear erp_out_byerr
+
+
 
 
 % /////////////////////////////////////////////////////////////////////////
@@ -172,6 +206,7 @@ clear erp_out_byerr
 
 
 % List electrodes to get ERP topograph plots (need all of them) 
+clear elect_erp el_erp_names erp_out_byerr(
 elect_erp = [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18];
 el_erp_names = {'M2';'Oz';'Pz';'Cz';'FCz';'Fz';'O1';'O2';'P3';'P4';'P7';'P8';...
     'CP1';'CP2';'C5';'C6';'F3';'F4'};
@@ -185,20 +220,23 @@ erp_out_byerr(:,:,3) = squeeze(mean(erp_out_T_inc(:,:,:),1)); %turn trials incor
 
 
 % Set the range of time to consider
-% tWin{1} = [50 150];
-% tWin{2} = [150 250];
-% tWin{3} = [250 350];
-% tWin{4} = [350 450];
-% tWin{5} = [450 550];
-
 tWin{1} = [1090 1200];
-tWin{2} = [1200 1300];
-tWin{3} = [1300 1400];
-tWin{4} = [1400 1500];
-tWin{5} = [1500 1600];
-tWin{6} = [1600 1700];
+tWin{2} = [1200 1400];
+tWin{3} = [1400 1600];
+tWin{4} = [1600 2000];
 
-CLims1 = [-9 9]; %range in microvolts
+% tWin{1} = [1090 1200];
+% tWin{2} = [1200 1300];
+% tWin{3} = [1300 1400];
+% tWin{4} = [1400 1500];
+% tWin{5} = [1500 1600];
+% tWin{6} = [1600 1700];
+% tWin{7} = [1700 1800];
+% tWin{8} = [1800 1900];
+
+
+
+CLims1 = [-12 12]; %range in microvolts
 nconds = 3; %number of plots
 conds = {'Flexion-Correct','Flexion-Incorrect','Straight'}; %labels for plots
 
@@ -246,9 +284,9 @@ clear tw_i nconds conds tWin CLims CLims1 t
 
 
 
-
-% Difference topplots -----------------------------------------------------
-
+% ------------------------------------------------------------------------- 
+%% Difference topplots -----------------------------------------------------
+% ------------------------------------------------------------------------- 
 % ------------------------------------------------------------------------- 
 % Average across subjects by errors
 erp_out_diff(:,:,1) = squeeze(mean((erp_out_T_cor(:,:,:)-erp_out_T_inc(:,:,:)),1)); %turn correct - incorrect
@@ -316,8 +354,6 @@ for tw_i = 1:length(tWin) %loop through several time windows
 
 end
 clear tw_i nconds conds tWin CLims CLims1 t time1 time2 i_elect
-
-
 
 
 

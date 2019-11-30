@@ -75,7 +75,7 @@ try
             [EEG] = VpixxEarlyTriggerFix(EEG);
 
             %% Change event markers for certain settings
-            if strcmpi(exp.settingname,'byFix_v4')
+            if strcmpi(exp.settingname,'byFix_v4') || strcmpi(exp.settingname,'byFix_v5')
                [EEG] = change_turn_labels(EEG);
             end
 
@@ -106,26 +106,28 @@ try
 % :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             %% Reject practice trials from data
             rej_practice = zeros(1,length(EEG.epoch));
-            if strcmpi(part_name,'006') %1 less practice trial recorded
-                rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
-
-            elseif strcmpi(part_name,'015') && strcmpi(exp.settingname,'byFix_v4') %1 trial timed out
-                rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
-            elseif strcmpi(part_name,'020') && strcmpi(exp.settingname,'byFix_v4') %1 trial timed out
-                rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
-            elseif strcmpi(part_name,'022') && strcmpi(exp.settingname,'byFix_v4') %1 trial timed out
-                rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
-            elseif strcmpi(part_name,'030') && strcmpi(exp.settingname,'byFix_v4') %2 trials timed out
-                rej_practice(1,1:20) = 1; %mark the first 20 trials for removal
-            elseif strcmpi(part_name,'032') && strcmpi(exp.settingname,'byFix_v4') %1 trial timed out
-                rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
-            elseif strcmpi(part_name,'036') && strcmpi(exp.settingname,'byFix_v4') %1 trial timed out
-                rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
-            elseif strcmpi(part_name,'040') && strcmpi(exp.settingname,'byFix_v4') %1 trial timed out
-                rej_practice(1,1:21) = 1; %mark the first 21 trials for removal    
-            elseif strcmpi(part_name,'045') && strcmpi(exp.settingname,'byFix_v4') %1 trial timed out
-                rej_practice(1,1:21) = 1; %mark the first 21 trials for removal 
-                
+%             if strcmpi(part_name,'006') %1 less practice trial recorded
+%                 rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
+            if strcmpi(exp.settingname,'byFix_v4') || strcmpi(exp.settingname,'byFix_v5')
+                if strcmpi(part_name,'015')%1 trial timed out
+                    rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
+                elseif strcmpi(part_name,'020')%1 trial timed out
+                    rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
+                elseif strcmpi(part_name,'022') %1 trial timed out
+                    rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
+                elseif strcmpi(part_name,'030') %2 trials timed out
+                    rej_practice(1,1:20) = 1; %mark the first 20 trials for removal
+                elseif strcmpi(part_name,'032') %1 trial timed out
+                    rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
+                elseif strcmpi(part_name,'036') %1 trial timed out
+                    rej_practice(1,1:21) = 1; %mark the first 21 trials for removal
+                elseif strcmpi(part_name,'040')%1 trial timed out
+                    rej_practice(1,1:21) = 1; %mark the first 21 trials for removal    
+                elseif strcmpi(part_name,'045') %1 trial timed out
+                    rej_practice(1,1:21) = 1; %mark the first 21 trials for removal 
+                else
+                    rej_practice(1,1:22) = 1; %mark the first 22 trials for removal
+                end
             else
                 rej_practice(1,1:22) = 1; %mark the first 22 trials for removal
             end

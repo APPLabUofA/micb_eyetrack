@@ -61,16 +61,21 @@ ccc
 %    Window size is 1115 samples (1115 ms) wide. *Combining straight &
 %    turn trials during processing*
 % 
-% % -> byFix_v4: winsize is 256, no ERSP baseline, epoched to targets; 
+% -> byFix_v4: winsize is 256, no ERSP baseline, epoched to targets; 
 %    Epoch limit [-1 2.5]. ERP baseline [700 1092]. Filter on [0.1 50]. 
 %    Cycles [2 0.8] (2 cycles at lowest freq & 10 at highest). Freq range [2 50]. 
 %    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
 %    Window size is 1115 samples (1115 ms) wide. 
 %    *Separate turn events into correct and incorrect*
 % 
+% -> byFix_v5: no ERSP baseline, epoched to targets; Epoch limit [-1 2.5]. 
+%    ERP baseline [700 1092]. Filter on [0.1 50]. Cycles [0] (FFT). Winsize 
+%    is 512. Freq range [2 50]. Timesout = 300. Padratio = 4. 
+%    *Separate turn events into correct and incorrect*
 % 
 % 
-% -> byGabor_v1: winsize is 256, no ERSP baseline, epoched to targets; 
+% 
+% -> byGabor_v1: winsize is 1024, no ERSP baseline, epoched to targets; 
 %    Epoch limit [-2.5 2.2]. ERP baseline [-1808 -1608]. Filter on [0.1 50]. 
 %    Cycles [2 0.8] (2 cycles at lowest freq & 10 at highest). Freq range [2 50]. 
 %    Freq increase in steps of 1 Hz. Timesout = 300. Padratio = 4. 
@@ -83,7 +88,7 @@ exp.name = 'micb';
 exp.conds = ''; %conds is usually used for comparing the same type of trials
                 %under different conditions (e.g., stimulation vs sham)
 exp.pathname = 'M:\Data\micb_eyetrack\EEG\'; %path of EEG data
-exp.settingname = 'byFix_v4'; % name each epoched set
+exp.settingname = 'byFix_v5'; % name each epoched set
 
 % note: the meaning of set here is to identify the type of analysis done.
 %       set is usually used to identify different trial types (e.g., standards
@@ -100,7 +105,7 @@ exp.settingname = 'byFix_v4'; % name each epoched set
 % exp.participants = {'033','034'};
 exp.participants = {'015','016','017','018','019','020','021','022','023','024','025','026','027','028',...
     '030','031','032','033','034','035','036','037','038','040','041','042','043','044','045','046','047',...
-    '048','049','050'};
+    '048','049','050','051'};
 % exp.participants = {'005','006','007','008','009','010','011','012','013','014','015',...
 %     '016','017','018','019','020','021','022','023','024','025','026','027','028',...
 %     '030','031','032','033','034'};
@@ -168,8 +173,8 @@ exp.erspbaseline = NaN;
 % precision or [6] for better frequency precision.
 % If [wavecycles factor], wavelet cycles increase with frequency beginning 
 % at wavecyles. See "help popnewtimef"
-% exp.cycles = [0]; %leave it at 0 to use FFT
-exp.cycles = [2 0.8]; %number of cycles 
+exp.cycles = [0]; %leave it at 0 to use FFT
+% exp.cycles = [2 0.8]; %number of cycles 
 
 % Choose number of output times
 exp.timesout = 300; %200 is usually used
@@ -186,7 +191,7 @@ exp.padratio = 4;
 exp.freqrange = [exp.cycles(1):50]; %when doing wavelet
 
 %% Epoching the data
-exp.epoch = 'off'; %on to epoch data; off to load previous data
+exp.epoch = 'on'; %on to epoch data; off to load previous data
 %%%indicates where you want to center your data (where time zero is)
 % exp.epochs = {'3','5','7','9','10','11','13','15','17',...
 %     '103','105','107','109','110','111','113','115','117'}; %must be list == length(exp.setname)

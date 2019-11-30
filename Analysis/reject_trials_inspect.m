@@ -3,7 +3,7 @@ function EEG = reject_trials_inspect(EEG,part_name,exp,rejtrial)
 i_set = 1; %code changed so now always 3
 
 %only when using this specific settings
-if strcmpi(exp.settingname,'byFix_v4')  
+if strcmpi(exp.settingname,'byFix_v4') || strcmpi(exp.settingname,'byFix_v5')  
     
     if strcmpi(part_name,'015') 
 %         EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
@@ -340,6 +340,25 @@ if strcmpi(exp.settingname,'byFix_v4')
         EEG.reject.rejthresh(276)=1;
         rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
         EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);
+        
+     elseif strcmpi(part_name,'051')
+        EEG.reject.rejthresh = zeros(size(EEG.reject.rejthresh)); %reset variable to all 0s
+        EEG.reject.rejthresh(18)=1;
+        EEG.reject.rejthresh(96:97)=1;
+        EEG.reject.rejthresh(124:126)=1;
+        EEG.reject.rejthresh(139)=1;
+        EEG.reject.rejthresh(143:146)=1;
+        EEG.reject.rejthresh(149)=1;
+        EEG.reject.rejthresh(187:188)=1;
+        EEG.reject.rejthresh(192:196)=1;
+        EEG.reject.rejthresh(212)=1;
+        EEG.reject.rejthresh(233:234)=1;
+        EEG.reject.rejthresh(238)=1;
+        EEG.reject.rejthresh(241)=1;
+        EEG.reject.rejthresh(255)=1;
+        EEG.reject.rejthresh(281:283)=1;
+        rejtrial(i_set,3).ids = find(EEG.reject.rejthresh==1);
+        EEG = pop_rejepoch(EEG,EEG.reject.rejthresh,0);    
     
     end
 % ````````````````````````````````````````````````````````````````````````````````````````````
